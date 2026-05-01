@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer
       style={{
-        backgroundColor: "#0B1F3A",
+        backgroundColor: "#02050A",
         color: "#E5E7EB",
         padding: "64px 24px 32px",
       }}
@@ -31,13 +31,13 @@ export default function Footer() {
             />
             <span style={{ fontSize: "18px", fontWeight: 600 }}>
               <span style={{ color: "#E5E7EB" }}>Convo</span>
-              <span style={{ color: "#15803D" }}>Satya</span>
+              <span style={{ color: "#2EC4B6" }}>Satya</span>
             </span>
           </div>
           <p
             style={{
               fontSize: "14px",
-              color: "#9CA3AF",
+              color: "rgba(255,255,255,0.5)",
               marginTop: "12px",
               lineHeight: 1.6,
             }}
@@ -54,7 +54,7 @@ export default function Footer() {
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "1.5px",
-              color: "#9CA3AF",
+              color: "rgba(255,255,255,0.4)",
               marginTop: 0,
               marginBottom: "16px",
             }}
@@ -62,13 +62,13 @@ export default function Footer() {
             Navigation
           </h4>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <Link href="#product" style={{ fontSize: "14px", color: "#D1D5DB", textDecoration: "none" }}>
+            <Link href="#product" style={{ fontSize: "14px", color: "rgba(255,255,255,0.65)", textDecoration: "none" }}>
               Product
             </Link>
-            <Link href="#demo" style={{ fontSize: "14px", color: "#D1D5DB", textDecoration: "none" }}>
+            <Link href="#demo" style={{ fontSize: "14px", color: "rgba(255,255,255,0.65)", textDecoration: "none" }}>
               Demo
             </Link>
-            <Link href="#contact" style={{ fontSize: "14px", color: "#D1D5DB", textDecoration: "none" }}>
+            <Link href="#contact" style={{ fontSize: "14px", color: "rgba(255,255,255,0.65)", textDecoration: "none" }}>
               Contact
             </Link>
           </div>
@@ -82,20 +82,20 @@ export default function Footer() {
               fontWeight: 600,
               textTransform: "uppercase",
               letterSpacing: "1.5px",
-              color: "#9CA3AF",
+              color: "rgba(255,255,255,0.4)",
               marginTop: 0,
               marginBottom: "16px",
             }}
           >
             Get in Touch
           </h4>
-          <p style={{ fontSize: "14px", color: "#D1D5DB", margin: 0 }}>
+          <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.65)", margin: 0 }}>
             support@convosatya.com
           </p>
           <p
             style={{
               fontSize: "13px",
-              color: "#6B7280",
+              color: "rgba(255,255,255,0.35)",
               marginTop: "12px",
             }}
           >
@@ -107,13 +107,13 @@ export default function Footer() {
       {/* Bottom: Copyright */}
       <div
         style={{
-          borderTop: "1px solid #1E3A5F",
+          borderTop: "1px solid rgba(255,255,255,0.08)",
           marginTop: "48px",
           paddingTop: "24px",
           textAlign: "center",
         }}
       >
-        <p style={{ fontSize: "13px", color: "#6B7280", margin: 0 }}>
+        <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.3)", margin: 0 }}>
           © 2026 ConvoSatya. All rights reserved.
         </p>
       </div>

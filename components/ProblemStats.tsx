@@ -8,34 +8,33 @@ export default function ProblemStats() {
   return (
     <section
       style={{
-        padding: "96px 24px",
-        backgroundColor: "#F9FAFB",
+        padding: "80px 24px",
         textAlign: "center",
       }}
     >
-      <h2
+      <p
         style={{
-          fontSize: "14px",
+          fontSize: "13px",
           fontWeight: 600,
           textTransform: "uppercase",
           letterSpacing: "2px",
-          color: "#15803D",
+          color: "#2EC4B6",
           margin: 0,
         }}
       >
         Why it matters
-      </h2>
-      <h3
+      </p>
+      <h2
         style={{
           fontSize: "32px",
           fontWeight: 700,
-          color: "#0B1F3A",
+          color: "#ffffff",
           marginTop: "12px",
           marginBottom: "64px",
         }}
       >
         The scale of the problem
-      </h3>
+      </h2>
 
       <div
         style={{
@@ -53,7 +52,7 @@ export default function ProblemStats() {
               style={{
                 fontSize: "48px",
                 fontWeight: 800,
-                color: "#0B1F3A",
+                color: "#ffffff",
                 lineHeight: 1.1,
               }}
             >
@@ -62,7 +61,7 @@ export default function ProblemStats() {
             <div
               style={{
                 fontSize: "15px",
-                color: "#4B5563",
+                color: "rgba(255,255,255,0.6)",
                 marginTop: "12px",
                 lineHeight: 1.5,
               }}
@@ -76,7 +75,7 @@ export default function ProblemStats() {
       <p
         style={{
           fontSize: "13px",
-          color: "#9CA3AF",
+          color: "rgba(255,255,255,0.35)",
           marginTop: "48px",
         }}
       >

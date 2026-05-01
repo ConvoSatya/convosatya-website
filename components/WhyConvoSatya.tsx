@@ -18,74 +18,31 @@ export default function WhyConvoSatya() {
   ];
 
   return (
-    <section
-      style={{
-        padding: "96px 24px",
-        backgroundColor: "#ffffff",
-        textAlign: "center",
-      }}
-    >
-      <p
-        style={{
-          fontSize: "13px",
-          fontWeight: 600,
-          textTransform: "uppercase",
-          letterSpacing: "2px",
-          color: "#15803D",
-          margin: 0,
-        }}
-      >
+    <section className="py-20 px-6 text-center">
+      <p className="text-[13px] font-semibold uppercase tracking-[2px] text-[#2EC4B6] m-0">
         What sets us apart
       </p>
-      <h2
-        style={{
-          fontSize: "32px",
-          fontWeight: 700,
-          color: "#0B1F3A",
-          marginTop: "12px",
-          marginBottom: "64px",
-        }}
-      >
+      <h2 className="text-[32px] font-bold text-white mt-3 mb-16">
         Why ConvoSatya
       </h2>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "40px",
-          maxWidth: "960px",
-          margin: "0 auto",
-          textAlign: "left",
-        }}
-      >
+      <div className="mx-auto grid max-w-[960px] grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
           <div
             key={item.title}
+            className="flex flex-col rounded-2xl p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(46,196,182,0.15)] group cursor-default"
             style={{
-              padding: "32px",
-              borderRadius: "12px",
-              backgroundColor: "#F9FAFB",
+              backgroundColor: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
             }}
           >
-            <h3
-              style={{
-                fontSize: "18px",
-                fontWeight: 600,
-                color: "#0B1F3A",
-                margin: 0,
-              }}
-            >
+            <h3 className="text-[18px] font-bold text-white m-0">
               {item.title}
             </h3>
-            <p
-              style={{
-                fontSize: "15px",
-                color: "#4B5563",
-                marginTop: "10px",
-                lineHeight: 1.6,
-              }}
-            >
+            <p className="text-[15px] text-white/60 mt-3 leading-relaxed">
               {item.description}
             </p>
           </div>

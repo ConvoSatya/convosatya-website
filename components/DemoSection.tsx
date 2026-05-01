@@ -3,8 +3,7 @@ export default function DemoSection() {
     <section
       id="demo"
       style={{
-        padding: "96px 24px",
-        backgroundColor: "#ffffff",
+        padding: "80px 24px",
         textAlign: "center",
       }}
     >
@@ -15,7 +14,7 @@ export default function DemoSection() {
           fontWeight: 600,
           textTransform: "uppercase",
           letterSpacing: "2px",
-          color: "#15803D",
+          color: "#2EC4B6",
           margin: 0,
         }}
       >
@@ -27,7 +26,7 @@ export default function DemoSection() {
         style={{
           fontSize: "32px",
           fontWeight: 700,
-          color: "#0B1F3A",
+          color: "#ffffff",
           marginTop: "12px",
           marginBottom: "48px",
         }}
@@ -44,12 +43,13 @@ export default function DemoSection() {
         }}
       >
         <div
-          className="rounded-xl shadow-lg"
           style={{
             position: "relative",
             width: "100%",
             paddingBottom: "56.25%",
             overflow: "hidden",
+            borderRadius: "16px",
+            border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
           <iframe
@@ -73,7 +73,7 @@ export default function DemoSection() {
       <p
         style={{
           fontSize: "14px",
-          color: "#9CA3AF",
+          color: "rgba(255,255,255,0.5)",
           marginTop: "24px",
         }}
       >
