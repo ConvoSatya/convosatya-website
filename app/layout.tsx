@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   title: "ConvoSatya — AI Scam Detection",
   description: "Real-time AI-powered scam and fraud detection for conversations.",
   verification: {
-    google: "googlee91bfb66229d3a81.html",
+    google: "googlee91bfb66229d3a81",
   },
   icons: {
     icon: [
