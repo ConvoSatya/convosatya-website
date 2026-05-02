@@ -22,7 +22,7 @@ export default function WhyConvoSatya() {
       <p className="text-[13px] font-semibold uppercase tracking-[2px] text-[#2EC4B6] m-0">
         What sets us apart
       </p>
-      <h2 className="text-[32px] font-bold text-white mt-3 mb-16">
+      <h2 className="text-[32px] font-bold text-white mt-3 mb-16 tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]">
         Why ConvoSatya
       </h2>
 
@@ -42,7 +42,7 @@ export default function WhyConvoSatya() {
             <h3 className="text-[18px] font-bold text-white m-0">
               {item.title}
             </h3>
-            <p className="text-[15px] text-white/60 mt-3 leading-relaxed">
+            <p className="text-[15px] text-white/75 mt-3 leading-relaxed">
               {item.description}
             </p>
           </div>

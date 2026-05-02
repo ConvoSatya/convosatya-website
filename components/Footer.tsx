@@ -1,9 +1,20 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
+  const scrollToTop = (e: React.MouseEvent) => {
+    // If we're already on the home page, just scroll up
+    if (window.location.pathname === "/") {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <footer
+      id="contact"
       style={{
         backgroundColor: "#02050A",
         color: "#E5E7EB",
@@ -22,26 +33,24 @@ export default function Footer() {
       >
         {/* Left: Logo + tagline */}
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <Link 
+            href="/" 
+            onClick={scrollToTop}
+            className="flex items-center gap-[10px] no-underline group cursor-pointer opacity-80 hover:opacity-100 transition-all"
+          >
             <Image
               src="/logo.png"
               alt="ConvoSatya logo"
               width={28}
               height={28}
+              className="group-hover:scale-105 transition-transform"
             />
-            <span style={{ fontSize: "18px", fontWeight: 600 }}>
-              <span style={{ color: "#E5E7EB" }}>Convo</span>
-              <span style={{ color: "#2EC4B6" }}>Satya</span>
+            <span className="text-[18px] tracking-tight">
+              <span className="font-semibold text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]">Convo</span>
+              <span className="font-bold bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(34,197,94,0.25)]">Satya</span>
             </span>
-          </div>
-          <p
-            style={{
-              fontSize: "14px",
-              color: "rgba(255,255,255,0.5)",
-              marginTop: "12px",
-              lineHeight: 1.6,
-            }}
-          >
+          </Link>
+          <p className="text-[14px] text-white/75 mt-3 leading-relaxed">
             AI-powered scam detection for conversations
           </p>
         </div>
@@ -61,15 +70,17 @@ export default function Footer() {
           >
             Navigation
           </h4>
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            <Link href="#product" style={{ fontSize: "14px", color: "rgba(255,255,255,0.65)", textDecoration: "none" }}>
-              Product
-            </Link>
-            <Link href="#demo" style={{ fontSize: "14px", color: "rgba(255,255,255,0.65)", textDecoration: "none" }}>
+          <div className="flex flex-col gap-2.5">
+            <Link href="#demo" className="text-[14px] text-white/75 hover:text-white no-underline transition-colors">
               Demo
             </Link>
-            <Link href="#contact" style={{ fontSize: "14px", color: "rgba(255,255,255,0.65)", textDecoration: "none" }}>
-              Contact
+            <Link 
+              href="/platform" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
+            >
+              Request Access
             </Link>
           </div>
         </div>
@@ -89,17 +100,11 @@ export default function Footer() {
           >
             Get in Touch
           </h4>
-          <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.65)", margin: 0 }}>
+          <p className="text-[14px] text-white/75 m-0 hover:text-white transition-colors cursor-pointer">
             support@convosatya.com
           </p>
-          <p
-            style={{
-              fontSize: "13px",
-              color: "rgba(255,255,255,0.35)",
-              marginTop: "12px",
-            }}
-          >
-            Built from academic research
+          <p className="text-[13px] text-white/75 mt-3">
+            Backed by Academic Research
           </p>
         </div>
       </div>
@@ -113,7 +118,7 @@ export default function Footer() {
           textAlign: "center",
         }}
       >
-        <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.3)", margin: 0 }}>
+        <p className="text-[13px] text-white/50 m-0">
           © 2026 ConvoSatya. All rights reserved.
         </p>
       </div>

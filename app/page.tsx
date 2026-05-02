@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import DemoSection from "../components/DemoSection";
 import ProblemStats from "../components/ProblemStats";
-import WhyConvoSatya from "../components/WhyConvoSatya";
+import PlatformCapabilities from "../components/PlatformCapabilities";
 import Footer from "../components/Footer";
 
 export default function Home() {
@@ -12,7 +12,7 @@ export default function Home() {
       <Hero />
       <DemoSection />
       <ProblemStats />
-      <WhyConvoSatya />
+      <PlatformCapabilities />
       <Footer />
     </>
   );
