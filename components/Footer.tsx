@@ -39,7 +39,7 @@ export default function Footer() {
             className="flex items-center gap-[10px] no-underline group cursor-pointer opacity-80 hover:opacity-100 transition-all"
           >
             <Image
-              src="/logo.png"
+              src="/ConvoSatya.png"
               alt="ConvoSatya logo"
               width={28}
               height={28}

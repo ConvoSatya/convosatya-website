@@ -20,7 +20,7 @@ export default function PlatformLogin() {
         {/* Logo Area */}
         <Link href="/" className="flex items-center gap-4 mb-8 no-underline group cursor-pointer">
           <Image
-            src="/logo.png"
+            src="/ConvoSatya.png"
             alt="ConvoSatya logo"
             width={48}
             height={48}

@@ -38,7 +38,7 @@ export default function Navbar() {
           className="flex items-center gap-2 no-underline cursor-pointer group"
         >
           <Image
-            src="/logo.png"
+            src="/ConvoSatya.png"
             alt="ConvoSatya logo"
             width={32}
             height={32}
