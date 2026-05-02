@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description: "Real-time AI-powered scam and fraud detection for conversations.",
   icons: {
     icon: [
-      { url: "/favicon.ico?v=2" },
+      { url: "/favicon2.ico" },
       { url: "/favicon-32x32.png?v=2", sizes: "32x32", type: "image/png" },
       { url: "/favicon-16x16.png?v=2", sizes: "16x16", type: "image/png" },
     ],
