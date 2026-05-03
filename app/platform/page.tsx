@@ -114,14 +114,12 @@ export default function PlatformLogin() {
               Write to <span className="text-[#2EC4B6] font-medium">support@convosatya.com</span> to request access.
             </p>
 
-            <a 
-              href="https://mail.google.com/mail/?view=cm&fs=1&to=support@convosatya.com&su=ConvoSatya&body=Hi ConvoSatya team,%0A%0AI would like to request access to the platform.%0A%0AName:%0AUse Case:%0A%0AThanks." 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-block px-8 py-2 rounded-full border border-[#2EC4B6] text-[#2EC4B6] hover:bg-[#2EC4B6]/10 transition-all font-semibold text-[14px] no-underline"
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent("open-access-modal"))}
+              className="mt-4 inline-block px-8 py-2 rounded-full border border-[#2EC4B6] text-[#2EC4B6] hover:bg-[#2EC4B6]/10 transition-all font-semibold text-[14px]"
             >
-              Email for Access
-            </a>
+              Request Early Platform Access
+            </button>
 
             <p className="text-white/50 text-[11px] mt-5 tracking-wide italic">
               Credentials are shared after access approval.

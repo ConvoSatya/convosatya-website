@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/Navbar";
 import GlobalBackground from "../components/GlobalBackground";
+import RequestAccessModal from "../components/RequestAccessModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-transparent" suppressHydrationWarning>
         <GlobalBackground />
         {children}
+        <RequestAccessModal />
       </body>
     </html>
   );

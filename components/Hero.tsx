@@ -105,14 +105,12 @@ export default function Hero() {
             }}
             className="flex-col sm:flex-row w-full sm:w-auto"
           >
-            <a
-              href="/platform"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto flex justify-center items-center rounded-lg text-white font-semibold text-[16px] px-9 py-3.5 bg-gradient-to-r from-green-500 to-green-400 shadow-[0_4px_14px_0_rgba(34,197,94,0.39)] hover:shadow-[0_6px_20px_rgba(34,197,94,0.23)] hover:scale-105 transition-all duration-300 no-underline"
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent("open-access-modal"))}
+              className="w-full sm:w-auto flex justify-center items-center rounded-lg text-white font-semibold text-[16px] px-9 py-3.5 bg-gradient-to-r from-green-500 to-green-400 shadow-[0_4px_14px_0_rgba(34,197,94,0.39)] hover:shadow-[0_6px_20px_rgba(34,197,94,0.23)] hover:scale-105 transition-all duration-300"
             >
-              Request Access
-            </a>
+              Request Early Platform Access
+            </button>
           </div>
 
           {/* Credibility line */}

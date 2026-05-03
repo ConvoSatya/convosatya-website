@@ -74,14 +74,12 @@ export default function Footer() {
             <Link href="#demo" className="text-[14px] text-white/75 hover:text-white no-underline transition-colors">
               Demo
             </Link>
-            <Link 
-              href="/platform" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent("open-access-modal"))}
+              className="text-[14px] text-left text-white/75 hover:text-white transition-colors cursor-pointer"
             >
-              Request Access
-            </Link>
+              Request Early Platform Access
+            </button>
           </div>
         </div>
 
