@@ -46,7 +46,7 @@ export default function PlatformCapabilities() {
   ];
 
   return (
-    <section id="product" className="relative py-12 px-6 overflow-hidden bg-black">
+    <section id="product" className="relative py-8 sm:py-10 md:py-12 px-6 overflow-hidden bg-black">
       {/* Background glow layer */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-blue-500/10 blur-[120px] opacity-40" />
@@ -56,20 +56,20 @@ export default function PlatformCapabilities() {
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-8">
-          <h2 className="text-[40px] font-bold text-white tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.1)] mb-6">
+          <h2 className="text-[26px] sm:text-[32px] md:text-[40px] font-bold text-white tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.1)] mb-6">
             Built for real-world scams
           </h2>
-          <p className="text-[18px] text-white/60 leading-relaxed">
+          <p className="text-[14px] sm:text-[16px] md:text-[18px] text-white/60 leading-relaxed">
             ConvoSatya understands scams across messages, conversations, and channels — in real time.
           </p>
         </div>
 
         {/* Unified Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {features.map((feature, idx) => (
             <div 
               key={idx} 
-              className="relative group p-6 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md transition-all duration-300 hover:border-transparent hover:bg-gradient-to-b hover:from-white/[0.05] hover:to-white/[0.02] hover:shadow-[0_0_40px_rgba(59,130,246,0.25)] opacity-0 translate-y-6 animate-[fadeUp_0.6s_ease_forwards]"
+              className="relative group p-4 sm:p-5 md:p-6 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md transition-all duration-300 hover:border-transparent hover:bg-gradient-to-b hover:from-white/[0.05] hover:to-white/[0.02] hover:shadow-[0_0_40px_rgba(59,130,246,0.25)] opacity-0 translate-y-6 animate-[fadeUp_0.6s_ease_forwards]"
               style={{ animationDelay: `${idx * 0.08}s` }}
             >
               {/* Subtle Cursor Light Effect */}

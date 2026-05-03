@@ -30,7 +30,7 @@ export default function Navbar() {
           : "bg-transparent border-transparent"
       }`}
     >
-      <div className="mx-auto max-w-6xl flex items-center justify-between px-6 py-4">
+      <div className="mx-auto max-w-6xl flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4">
         {/* Left: Logo + Brand */}
         <Link 
           href="/" 
@@ -45,14 +45,14 @@ export default function Navbar() {
             priority
             className="group-hover:scale-105 transition-transform"
           />
-          <span className="text-xl tracking-tight">
+          <span className="text-base sm:text-xl tracking-tight">
             <span className="font-semibold text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]">Convo</span>
             <span className="font-bold bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(34,197,94,0.25)]">Satya</span>
           </span>
         </Link>
 
         {/* Right: Nav Links */}
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
           <Link
             href="#demo"
             className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"

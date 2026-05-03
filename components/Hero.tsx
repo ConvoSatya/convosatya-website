@@ -57,13 +57,14 @@ export default function Hero() {
 
   return (
     <section
+      className="pt-20 sm:pt-24 md:pt-28 lg:pt-32"
       style={{
         position: "relative",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        padding: "120px 24px",
+        padding: "80px 16px",
         background: `
           radial-gradient(600px at 70% 30%, rgba(0, 120, 255, 0.25), transparent),
           radial-gradient(400px at 30% 70%, rgba(0, 200, 150, 0.15), transparent),
@@ -75,12 +76,12 @@ export default function Hero() {
       <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-blue-500/20 blur-[120px] animate-float-glow pointer-events-none z-0" />
 
       {/* Container */}
-      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8 items-center relative z-10">
+      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-8 items-center relative z-10">
 
         {/* Left Column: Text & CTA */}
         <div className="flex flex-col text-center lg:text-left items-center lg:items-start z-10">
           {/* Headline */}
-          <h1 className="max-lg:text-[40px] text-[56px] text-white font-bold leading-[1.1] tracking-[-0.02em] max-w-[600px] relative drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]">
+          <h1 className="text-[28px] sm:text-[36px] md:text-[44px] lg:text-[56px] text-white font-bold leading-[1.1] tracking-[-0.02em] max-w-[600px] relative drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]">
             <span className="text-white">
               Detect scams in conversations
             </span>
@@ -89,7 +90,7 @@ export default function Hero() {
           </h1>
 
           {/* Subtext */}
-          <p className="text-[18px] text-white/75 mt-6 max-w-[480px] leading-[1.6] relative">
+          <p className="text-[14px] sm:text-[16px] md:text-[18px] text-white/75 mt-6 max-w-[480px] leading-[1.6] relative">
             Real-time AI detection and verification for SMS, email, and chat
             conversations.
           </p>
@@ -121,7 +122,7 @@ export default function Hero() {
         </div>
 
         {/* Right Column: UI Mock */}
-        <div className="relative w-full max-w-md mx-auto lg:mx-0 lg:ml-auto z-10 mt-8 lg:mt-0 group cursor-default">
+        <div className="relative w-full max-w-sm sm:max-w-md mx-auto lg:mx-0 lg:ml-auto z-10 mt-8 lg:mt-0 group cursor-default">
           {/* Subtle blue radial glow behind card */}
           <div
             style={{
@@ -166,7 +167,7 @@ export default function Hero() {
             {/* Scrollable Chat Area */}
             <div 
               ref={chatContainerRef}
-              className="relative z-20 flex flex-col h-[420px] overflow-y-auto pr-2 pb-[80px] scroll-smooth [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20"
+              className="relative z-20 flex flex-col h-[280px] sm:h-[340px] md:h-[420px] overflow-y-auto pr-2 pb-[80px] scroll-smooth [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/20"
             >
               {/* Spacer to push short chats to bottom */}
               <div className="flex-1 min-h-[20px]" />

@@ -65,7 +65,7 @@ const StatCard = ({ target, prefix = "", suffix = "", decimals = 0, label, conte
   return (
     <div 
       ref={cardRef}
-      className="relative flex-1 min-w-[300px] p-8 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md transition-all duration-300 hover:border-blue-500/30 hover:shadow-[0_0_40px_rgba(59,130,246,0.15)] group"
+      className="relative flex-1 min-w-[240px] sm:min-w-[280px] md:min-w-[300px] p-5 sm:p-6 md:p-8 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md transition-all duration-300 hover:border-blue-500/30 hover:shadow-[0_0_40px_rgba(59,130,246,0.15)] group"
     >
       <div className="relative z-10">
         <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-teal-400/10 mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -74,8 +74,8 @@ const StatCard = ({ target, prefix = "", suffix = "", decimals = 0, label, conte
           </div>
         </div>
 
-        <div className="text-[44px] font-bold text-white tracking-tight mb-2">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-400">
+        <div className="text-[28px] sm:text-[36px] md:text-[44px] font-bold text-white tracking-tight mb-2">
+         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-400">
             {prefix}{formattedCount}{suffix}
           </span>
         </div>
@@ -120,7 +120,7 @@ export default function ProblemStats() {
   ];
 
   return (
-    <section className="relative py-24 px-6 bg-black overflow-hidden">
+    <section className="relative py-12 sm:py-16 md:py-24 px-6 bg-black overflow-hidden">
       {/* Subtle background glow to match vibe */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/5 blur-[120px] pointer-events-none" />
 
@@ -129,10 +129,10 @@ export default function ProblemStats() {
           <p className="text-[13px] font-semibold tracking-[2px] text-blue-400 uppercase mb-4">
             WHY IT MATTERS
           </p>
-          <h2 className="text-[40px] font-bold text-white tracking-tight mb-4 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+          <h2 className="text-[26px] sm:text-[32px] md:text-[40px] font-bold text-white tracking-tight mb-4 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
             The scale of the problem
           </h2>
-          <p className="text-[16px] text-white/60 max-w-2xl mx-auto">
+          <p className="text-[14px] sm:text-[16px] text-white/60 max-w-2xl mx-auto">
             Scams are not slowing down. Neither are we.
           </p>
         </div>
