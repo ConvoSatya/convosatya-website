@@ -108,6 +108,7 @@ function loadStoredState(demoUserId: string): StoredDemoState {
       ...parsed,
       demo_user_id: parsed.demo_user_id || demoUserId,
       progress: parsed.progress || defaultProgress,
+      usage: parsed.usage || null,
     };
   } catch {
     return createDefaultState(demoUserId);
@@ -124,20 +125,70 @@ function saveStoredState(state: StoredDemoState) {
 export default function FaustDemoChat({
   demoUserId = "stakeholder_demo",
 }: FaustDemoChatProps) {
-
   const [demoState, setDemoState] = useState<StoredDemoState>(() =>
-    createDefaultState(demoUserId)
+    loadStoredState(demoUserId)
   );
+
   const [userText, setUserText] = useState("");
   const [otherText, setOtherText] = useState("");
   const [analysisQueue, setAnalysisQueue] = useState<DemoMessage[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [usageLoadedFromServer, setUsageLoadedFromServer] = useState(false);
 
+  /**
+   * 1. Load browser-stored conversation state first.
+   * This restores visible messages and encrypted_state_token.
+   */
   useEffect(() => {
-    setDemoState(loadStoredState(demoUserId));
+    saveStoredState(demoState);
+  }, [demoState]);
+
+  /**
+   * 2. Then fetch authoritative quota/usage from the server.
+   * This prevents localStorage from showing stale 0 / 30 usage.
+   */
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadServerUsage() {
+      try {
+        const response = await fetch("/api/session", {
+          cache: "no-store",
+        });
+
+        const data = await response.json();
+
+        if (cancelled) return;
+
+        if (data?.usage) {
+          setDemoState((prev) => ({
+            ...prev,
+            demo_user_id: demoUserId,
+            usage: data.usage,
+          }));
+        }
+
+        setUsageLoadedFromServer(true);
+      } catch {
+        if (!cancelled) {
+          setUsageLoadedFromServer(true);
+        }
+      }
+    }
+
+    loadServerUsage();
+
+    return () => {
+      cancelled = true;
+    };
   }, [demoUserId]);
 
+  /**
+   * 3. Save state to localStorage after local/server state updates.
+   * This stores visible chat and encrypted token, but quota is always refreshed
+   * again from /api/session when the page opens.
+   */
   useEffect(() => {
     saveStoredState(demoState);
   }, [demoState]);
@@ -165,6 +216,12 @@ export default function FaustDemoChat({
 
   function clearConversation() {
     const fresh = createDefaultState(demoUserId);
+
+    /**
+     * Keep the server quota visible after clearing the local conversation.
+     * Clear Conversation should reset chat/state only, not database usage.
+     */
+    fresh.usage = demoState.usage;
 
     setDemoState(fresh);
     setAnalysisQueue([]);
@@ -204,6 +261,10 @@ export default function FaustDemoChat({
     setAnalysisQueue((prev) => [...prev, message]);
   }
 
+  /**
+   * Frontend mutex queue:
+   * messages appear instantly, but backend analysis runs one message at a time.
+   */
   useEffect(() => {
     if (isAnalyzing) return;
     if (analysisQueue.length === 0) return;
@@ -216,7 +277,7 @@ export default function FaustDemoChat({
       setAnalysisQueue(remaining);
 
       try {
-        const response = await fetch(`/api/faust/analyze-turn`, {
+        const response = await fetch("/api/faust/analyze-turn", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -225,7 +286,7 @@ export default function FaustDemoChat({
             demo_user_id: demoUserId,
             message: nextMessage,
             encrypted_state_token: demoState.encrypted_state_token,
-            usage: demoState.usage,
+            usage: null,
             language: "English",
           }),
         });
@@ -233,7 +294,9 @@ export default function FaustDemoChat({
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data?.detail || "Analysis request failed.");
+          throw new Error(
+            data?.detail || data?.message || "Analysis request failed."
+          );
         }
 
         setDemoState((prev) => ({
@@ -313,7 +376,9 @@ export default function FaustDemoChat({
                 return (
                   <div
                     key={message.turn}
-                    className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+                    className={`flex ${
+                      isUser ? "justify-end" : "justify-start"
+                    }`}
                   >
                     <div
                       className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-6 ${
@@ -405,8 +470,12 @@ export default function FaustDemoChat({
           />
 
           <StatusCard
-            label="Fully analyzed"
-            value={`Turn ${progress.fully_analyzed_turn || 0}`}
+            label="Full review"
+            value={
+              (progress.conversation_analyzed_turn || 0) > 0
+                ? `Complete through Turn ${progress.fully_analyzed_turn || 0}`
+                : "Waiting for enough context"
+            }
           />
 
           <StatusCard
@@ -416,6 +485,12 @@ export default function FaustDemoChat({
 
           <div className="mt-6 rounded-2xl border border-[#2EC4B6]/20 bg-[#2EC4B6]/10 p-4">
             <p className="text-sm text-[#8BE3DA]">Demo usage</p>
+
+            {!usageLoadedFromServer && (
+              <p className="mt-2 text-xs text-slate-400">
+                Loading latest quota...
+              </p>
+            )}
 
             <div className="mt-3 space-y-2 text-sm text-slate-200">
               <UsageRow

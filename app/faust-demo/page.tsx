@@ -41,7 +41,7 @@ export default async function FaustDemoPage() {
             </div>
           </div>
 
-          <FaustDemoChat demoUserId={demoUserId} />
+          <FaustDemoChat key={demoUserId} demoUserId={demoUserId} />
         </div>
       </section>
 
