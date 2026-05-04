@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateDemoCredential } from "@/lib/demoAuth";
+
+const BACKEND_URL = process.env.FAUST_BACKEND_URL;
+const FRONTEND_SHARED_SECRET = process.env.FAUST_FRONTEND_SHARED_SECRET;
 
 export async function POST(request: NextRequest) {
   try {
+    if (!BACKEND_URL || !FRONTEND_SHARED_SECRET) {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: "Login service is not configured.",
+        },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
 
     const username = String(body.username || "").trim();
@@ -18,21 +30,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const isValid = validateDemoCredential(username, password);
+    const backendResponse = await fetch(`${BACKEND_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-faust-frontend-secret": FRONTEND_SHARED_SECRET,
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    });
 
-    if (!isValid) {
+    const backendData = await backendResponse.json();
+
+    if (!backendResponse.ok) {
       return NextResponse.json(
         {
           ok: false,
-          message: "Invalid username or password.",
+          message:
+            backendData?.detail ||
+            backendData?.message ||
+            "Invalid username or password.",
         },
-        { status: 401 }
+        { status: backendResponse.status }
       );
     }
 
     const response = NextResponse.json({
       ok: true,
       username,
+      account: backendData.account,
     });
 
     response.cookies.set("demo_username", username, {
@@ -44,11 +72,14 @@ export async function POST(request: NextRequest) {
     });
 
     return response;
-  } catch {
+  } catch (error) {
     return NextResponse.json(
       {
         ok: false,
-        message: "Login failed.",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Login failed. Please try again.",
       },
       { status: 500 }
     );

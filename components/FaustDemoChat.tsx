@@ -124,8 +124,6 @@ function saveStoredState(state: StoredDemoState) {
 export default function FaustDemoChat({
   demoUserId = "stakeholder_demo",
 }: FaustDemoChatProps) {
-  const apiBaseUrl =
-    process.env.NEXT_PUBLIC_FAUST_API_URL || "http://localhost:8000";
 
   const [demoState, setDemoState] = useState<StoredDemoState>(() =>
     createDefaultState(demoUserId)
@@ -218,7 +216,7 @@ export default function FaustDemoChat({
       setAnalysisQueue(remaining);
 
       try {
-        const response = await fetch(`${apiBaseUrl}/analyze-turn`, {
+        const response = await fetch(`/api/faust/analyze-turn`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -259,7 +257,7 @@ export default function FaustDemoChat({
     }
 
     analyzeNextMessage();
-  }, [analysisQueue, isAnalyzing, apiBaseUrl, demoState, demoUserId]);
+  }, [analysisQueue, isAnalyzing, demoState, demoUserId]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
