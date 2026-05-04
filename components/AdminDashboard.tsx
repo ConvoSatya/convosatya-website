@@ -255,6 +255,48 @@ export default function AdminDashboard() {
     }
   }
 
+  async function handleDeleteAccount(username: string) {
+    const confirmed = window.confirm(
+        `Delete account ${username}? This will permanently remove the stakeholder credential and usage record.`
+    );
+
+    if (!confirmed) return;
+
+    const secondConfirmed = window.confirm(
+        `Are you absolutely sure you want to delete ${username}?`
+    );
+
+    if (!secondConfirmed) return;
+
+    setErrorMessage("");
+    setStatusMessage("");
+
+    try {
+        const response = await fetch(
+        `/api/admin/accounts/${encodeURIComponent(username)}`,
+        {
+            method: "DELETE",
+        }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+        throw new Error(data?.detail || data?.message || "Failed to delete account.");
+        }
+
+        setStatusMessage(`Deleted account: ${username}`);
+
+        setSelectedUsername(null);
+
+        await loadAccounts();
+    } catch (error) {
+        setErrorMessage(
+        error instanceof Error ? error.message : "Failed to delete account."
+        );
+    }
+    }
+
   function updateDraft(username: string, patch: Partial<DemoAccount>) {
     setEditDrafts((prev) => ({
       ...prev,
@@ -531,11 +573,12 @@ export default function AdminDashboard() {
 
               {selectedAccount ? (
                 <AccountEditor
-                  account={selectedAccount}
-                  getDraftValue={getDraftValue}
-                  updateDraft={updateDraft}
-                  onSave={handleSaveAccount}
-                  onReset={handleResetUsage}
+                    account={selectedAccount}
+                    getDraftValue={getDraftValue}
+                    updateDraft={updateDraft}
+                    onSave={handleSaveAccount}
+                    onReset={handleResetUsage}
+                    onDelete={handleDeleteAccount}
                 />
               ) : (
                 <div className="rounded-2xl border border-white/10 bg-black/20 p-6 text-sm text-slate-400">
@@ -556,6 +599,7 @@ function AccountEditor({
   updateDraft,
   onSave,
   onReset,
+  onDelete,
 }: {
   account: DemoAccount;
   getDraftValue: <K extends keyof DemoAccount>(
@@ -565,6 +609,7 @@ function AccountEditor({
   updateDraft: (username: string, patch: Partial<DemoAccount>) => void;
   onSave: (username: string) => void;
   onReset: (username: string) => void;
+  onDelete: (username: string) => void;
 }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
@@ -666,6 +711,14 @@ function AccountEditor({
           className="flex-1 rounded-xl border border-yellow-400/30 bg-yellow-500/10 px-4 py-3 text-sm font-semibold text-yellow-100 transition hover:bg-yellow-500/20"
         >
           Reset usage
+        </button>
+
+        <button
+            type="button"
+            onClick={() => onDelete(account.username)}
+            className="rounded-xl border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-100 transition hover:bg-red-500/20"
+        >
+            Delete account
         </button>
       </div>
     </div>
