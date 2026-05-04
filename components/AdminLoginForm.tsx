@@ -34,8 +34,7 @@ export default function AdminLoginForm() {
         throw new Error(data?.message || "Invalid admin password.");
       }
 
-      router.push(nextPath);
-      router.refresh();
+      window.location.href = nextPath;
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Admin login failed. Try again."

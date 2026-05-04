@@ -24,12 +24,12 @@ export default function DemoLoginForm() {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username,
-          password
-        })
+          username: username.trim(),
+          password,
+        }),
       });
 
       const data = await response.json();
@@ -38,8 +38,7 @@ export default function DemoLoginForm() {
         throw new Error(data?.message || "Invalid username or password.");
       }
 
-      router.push(nextPath);
-      router.refresh();
+      window.location.href = nextPath;
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Login failed. Please try again."
