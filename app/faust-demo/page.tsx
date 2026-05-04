@@ -1,8 +1,14 @@
+import { cookies } from "next/headers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FaustDemoChat from "@/components/FaustDemoChat";
+import DemoLogoutButton from "@/components/DemoLogoutButton";
 
-export default function FaustDemoPage() {
+export default async function FaustDemoPage() {
+  const cookieStore = await cookies();
+  const demoUserId =
+    cookieStore.get("demo_username")?.value || "stakeholder_demo";
+
   return (
     <main className="min-h-screen bg-[#020617] text-white">
       <Navbar />
@@ -21,12 +27,21 @@ export default function FaustDemoPage() {
             </h1>
 
             <p className="max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-              Test FAUST with a simulated conversation. Messages appear instantly while
-              the system analyzes safety signals in the background.
+              Test FAUST with a simulated conversation. Messages appear instantly
+              while the system analyzes safety signals in the background.
             </p>
+
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-500">
+              <p>
+                Signed in as{" "}
+                <span className="font-medium text-[#2EC4B6]">{demoUserId}</span>
+              </p>
+
+              <DemoLogoutButton />
+            </div>
           </div>
 
-          <FaustDemoChat demoUserId="stakeholder_demo" />
+          <FaustDemoChat demoUserId={demoUserId} />
         </div>
       </section>
 
