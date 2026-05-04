@@ -46,7 +46,11 @@ type StoredDemoState = {
   alert: Alert;
 };
 
-const STORAGE_KEY = "faustcloud_demo_v1";
+type FaustDemoChatProps = {
+  demoUserId?: string;
+};
+
+const STORAGE_KEY_PREFIX = "faustcloud_demo_v1";
 
 const defaultProgress: Progress = {
   latest_turn: 0,
@@ -68,9 +72,15 @@ const defaultUsage: Usage = {
   contact_checks_limit: 5,
 };
 
-function createDefaultState(): StoredDemoState {
+function getStorageKey(demoUserId: string) {
+  return `${STORAGE_KEY_PREFIX}_${demoUserId}`;
+}
+
+function createDefaultState(
+  demoUserId: string = "stakeholder_demo"
+): StoredDemoState {
   return {
-    demo_user_id: "stakeholder_demo",
+    demo_user_id: demoUserId,
     messages: [],
     turn: 1,
     encrypted_state_token: null,
@@ -80,37 +90,45 @@ function createDefaultState(): StoredDemoState {
   };
 }
 
-function loadStoredState(): StoredDemoState {
+function loadStoredState(demoUserId: string): StoredDemoState {
   if (typeof window === "undefined") {
-    return createDefaultState();
+    return createDefaultState(demoUserId);
   }
 
-  const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) return createDefaultState();
+  const storageKey = getStorageKey(demoUserId);
+  const raw = window.localStorage.getItem(storageKey);
+
+  if (!raw) return createDefaultState(demoUserId);
 
   try {
     const parsed = JSON.parse(raw) as StoredDemoState;
+
     return {
-      ...createDefaultState(),
+      ...createDefaultState(demoUserId),
       ...parsed,
+      demo_user_id: parsed.demo_user_id || demoUserId,
       progress: parsed.progress || defaultProgress,
     };
   } catch {
-    return createDefaultState();
+    return createDefaultState(demoUserId);
   }
 }
 
 function saveStoredState(state: StoredDemoState) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+  const storageKey = getStorageKey(state.demo_user_id || "stakeholder_demo");
+  window.localStorage.setItem(storageKey, JSON.stringify(state));
 }
 
-export default function FaustDemoChat() {
+export default function FaustDemoChat({
+  demoUserId = "stakeholder_demo",
+}: FaustDemoChatProps) {
   const apiBaseUrl =
     process.env.NEXT_PUBLIC_FAUST_API_URL || "http://localhost:8000";
 
   const [demoState, setDemoState] = useState<StoredDemoState>(() =>
-    createDefaultState()
+    createDefaultState(demoUserId)
   );
   const [userText, setUserText] = useState("");
   const [otherText, setOtherText] = useState("");
@@ -119,8 +137,8 @@ export default function FaustDemoChat() {
   const [apiError, setApiError] = useState<string | null>(null);
 
   useEffect(() => {
-    setDemoState(loadStoredState());
-  }, []);
+    setDemoState(loadStoredState(demoUserId));
+  }, [demoUserId]);
 
   useEffect(() => {
     saveStoredState(demoState);
@@ -148,14 +166,15 @@ export default function FaustDemoChat() {
   }, [analysisQueue, isAnalyzing]);
 
   function clearConversation() {
-    const fresh = createDefaultState();
+    const fresh = createDefaultState(demoUserId);
+
     setDemoState(fresh);
     setAnalysisQueue([]);
     setIsAnalyzing(false);
     setApiError(null);
 
     if (typeof window !== "undefined") {
-      window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem(getStorageKey(demoUserId));
     }
   }
 
@@ -171,6 +190,7 @@ export default function FaustDemoChat() {
 
     const updatedState: StoredDemoState = {
       ...demoState,
+      demo_user_id: demoUserId,
       messages: [...demoState.messages, message],
       turn: demoState.turn + 1,
     };
@@ -204,7 +224,7 @@ export default function FaustDemoChat() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            demo_user_id: demoState.demo_user_id,
+            demo_user_id: demoUserId,
             message: nextMessage,
             encrypted_state_token: demoState.encrypted_state_token,
             usage: demoState.usage,
@@ -220,6 +240,7 @@ export default function FaustDemoChat() {
 
         setDemoState((prev) => ({
           ...prev,
+          demo_user_id: demoUserId,
           encrypted_state_token: data.encrypted_state_token,
           usage: data.usage,
           progress: data.progress,
@@ -230,6 +251,7 @@ export default function FaustDemoChat() {
           error instanceof Error
             ? error.message
             : "Could not reach the FAUST backend.";
+
         setApiError(message);
       } finally {
         setIsAnalyzing(false);
@@ -237,7 +259,7 @@ export default function FaustDemoChat() {
     }
 
     analyzeNextMessage();
-  }, [analysisQueue, isAnalyzing, apiBaseUrl, demoState]);
+  }, [analysisQueue, isAnalyzing, apiBaseUrl, demoState, demoUserId]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
@@ -259,7 +281,9 @@ export default function FaustDemoChat() {
 
         {demoState.alert && (
           <div className="mb-4 rounded-2xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-100">
-            <p className="font-semibold text-red-200">{demoState.alert.source}</p>
+            <p className="font-semibold text-red-200">
+              {demoState.alert.source}
+            </p>
             <p className="mt-1 leading-6">{demoState.alert.message}</p>
           </div>
         )}
@@ -361,11 +385,18 @@ export default function FaustDemoChat() {
         </h2>
 
         <div className="space-y-3 text-sm">
-          <StatusCard label="Latest turn" value={`${progress.latest_turn || demoState.messages.length}`} />
+          <StatusCard
+            label="Latest turn"
+            value={`${progress.latest_turn || demoState.messages.length}`}
+          />
+
           <StatusCard
             label="Message checks"
-            value={`Complete through Turn ${progress.message_pipeline_analyzed_turn || 0}`}
+            value={`Complete through Turn ${
+              progress.message_pipeline_analyzed_turn || 0
+            }`}
           />
+
           <StatusCard
             label="Conversation review"
             value={
@@ -374,10 +405,12 @@ export default function FaustDemoChat() {
                 : "Waiting for context"
             }
           />
+
           <StatusCard
             label="Fully analyzed"
             value={`Turn ${progress.fully_analyzed_turn || 0}`}
           />
+
           <StatusCard
             label="Status"
             value={isAnalyzing ? "Analyzing" : progress.analysis_status || "empty"}
@@ -385,22 +418,26 @@ export default function FaustDemoChat() {
 
           <div className="mt-6 rounded-2xl border border-[#2EC4B6]/20 bg-[#2EC4B6]/10 p-4">
             <p className="text-sm text-[#8BE3DA]">Demo usage</p>
+
             <div className="mt-3 space-y-2 text-sm text-slate-200">
               <UsageRow
                 label="Messages"
                 used={usage.messages_used}
                 limit={usage.messages_limit}
               />
+
               <UsageRow
                 label="Verifier credits"
                 used={usage.verifier_credits_used}
                 limit={usage.verifier_credits_limit}
               />
+
               <UsageRow
                 label="URL checks"
                 used={usage.url_checks_used}
                 limit={usage.url_checks_limit}
               />
+
               <UsageRow
                 label="Contact checks"
                 used={usage.contact_checks_used}
@@ -410,8 +447,8 @@ export default function FaustDemoChat() {
           </div>
 
           <p className="pt-3 text-xs leading-5 text-slate-500">
-            Messages appear instantly. FAUST analyzes queued messages one at a time
-            using an encrypted backend state token.
+            Messages appear instantly. FAUST analyzes queued messages one at a
+            time using an encrypted backend state token.
           </p>
         </div>
       </aside>
@@ -437,7 +474,8 @@ function UsageRow({
   used: number;
   limit: number;
 }) {
-  const percent = limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+  const percent =
+    limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
 
   return (
     <div>
@@ -447,6 +485,7 @@ function UsageRow({
           {used} / {limit}
         </span>
       </div>
+
       <div className="h-1.5 overflow-hidden rounded-full bg-black/30">
         <div
           className="h-full rounded-full bg-[#2EC4B6]"

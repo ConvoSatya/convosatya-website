@@ -26,7 +26,7 @@ export default function FaustDemoPage() {
             </p>
           </div>
 
-          <FaustDemoChat />
+          <FaustDemoChat demoUserId="stakeholder_demo" />
         </div>
       </section>
 
