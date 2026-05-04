@@ -60,13 +60,6 @@ export default function Navbar() {
           >
             Demo
           </Link>
-          <Link
-            href="#contact"
-            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
-            style={{ color: "rgba(255,255,255,0.85)" }}
-          >
-            Contact
-          </Link>
         </div>
       </div>
     </nav>
