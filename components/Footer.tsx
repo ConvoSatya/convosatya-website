@@ -126,6 +126,12 @@ export default function Footer() {
             <Link href="/faust-demo" className="text-[14px] text-white/75 hover:text-white no-underline transition-colors">
               Demo
             </Link>
+            <Link
+              href="/faq"
+              className="text-[15px] text-white/75 no-underline transition-colors hover:text-white"
+            >
+              FAQ
+            </Link>
             <button 
               onClick={() => window.dispatchEvent(new CustomEvent("open-access-modal"))}
               className="text-[14px] text-left text-white/75 hover:text-white transition-colors cursor-pointer"
