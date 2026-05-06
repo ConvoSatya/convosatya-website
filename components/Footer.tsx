@@ -71,7 +71,7 @@ export default function Footer() {
             Navigation
           </h4>
           <div className="flex flex-col gap-2.5">
-            <Link href="#demo" className="text-[14px] text-white/75 hover:text-white no-underline transition-colors">
+            <Link href="/faust-demo" className="text-[14px] text-white/75 hover:text-white no-underline transition-colors">
               Demo
             </Link>
             <button 
