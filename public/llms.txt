@@ -1,0 +1,43 @@
+# ConvoSatya
+
+ConvoSatya is a cybersecurity startup building AI-powered tools for scam detection, scam prevention, and post-scam reporting.
+
+The company's current product is FAUST, an AI-powered conversational scam detection system designed to identify suspicious conversations, phishing attempts, impersonation scams, social engineering, and scam patterns across multiple messages.
+
+## Product
+
+FAUST analyzes conversations across multiple turns instead of judging only a single message. It is designed for scams that develop gradually through trust-building, urgency, impersonation, emotional pressure, malicious links, suspicious phone numbers, suspicious emails, or fake brand claims.
+
+FAUST can help analyze:
+- phishing scams
+- brand impersonation scams
+- fake bank alerts
+- delivery scams
+- tech support scams
+- romance scams
+- investment scams
+- job scams
+- account verification scams
+- other conversational social engineering attempts
+
+## Core capabilities
+
+- Conversational scam detection
+- Multi-turn message analysis
+- Phishing and impersonation detection
+- URL, phone number, email, and brand verification
+- Risk signals based on urgency, manipulation, impersonation, and suspicious contact channels
+- User-friendly safety advice
+
+## Key pages
+
+- Homepage: https://www.convosatya.com/
+- FAUST demo: https://www.convosatya.com/faust-demo
+- FAQ: https://www.convosatya.com/faq
+- Platform access request: https://www.convosatya.com/platform
+
+## Contact
+
+Support email: support@convosatya.com
+LinkedIn: https://www.linkedin.com/company/convosatya/
+GitHub: https://github.com/ConvoSatya
