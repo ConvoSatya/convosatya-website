@@ -5,6 +5,8 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import ProblemStats from "../components/ProblemStats";
 import PlatformCapabilities from "../components/PlatformCapabilities";
+import OnDeviceComingSoon from "../components/OnDeviceComingSoon";
+import ScamReportingSection from "../components/ScamReportingSection";
 import Footer from "../components/Footer";
 
 const organizationSchema = {
@@ -93,6 +95,8 @@ export default function Home() {
       <Hero />
       <ProblemStats />
       <PlatformCapabilities />
+      <OnDeviceComingSoon />
+      <ScamReportingSection />
       <Footer />
     </>
   );
