@@ -1,5 +1,22 @@
-https://www.convosatya.com/
-https://www.convosatya.com/faq
-https://www.convosatya.com/faust-demo
-https://www.convosatya.com/platform
-https://www.convosatya.com/llms.txt
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.convosatya.com/</loc>
+  </url>
+
+  <url>
+    <loc>https://www.convosatya.com/faq</loc>
+  </url>
+
+  <url>
+    <loc>https://www.convosatya.com/faust-demo</loc>
+  </url>
+
+  <url>
+    <loc>https://www.convosatya.com/platform</loc>
+  </url>
+
+  <url>
+    <loc>https://www.convosatya.com/llms.txt</loc>
+  </url>
+</urlset>
