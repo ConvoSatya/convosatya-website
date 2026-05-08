@@ -216,9 +216,7 @@ export default function FaustDemoChat({
   }
 
   function openAccessRequest() {
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("open-access-modal"));
-    }
+    window.location.href = "/platform";
   }
 
   function sendMessage(speaker: Speaker) {

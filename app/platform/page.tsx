@@ -118,6 +118,9 @@ export default function PlatformAccessPage() {
           <p className="mt-5 text-center text-xs leading-5 text-slate-500">
             Already approved? Use the Demo link and sign in with your provided username and password.
           </p>
+          <p className="mt-5 text-center text-xs leading-5 text-slate-500">
+            Need more demo usage? Submit another access request mentioning your existing username.
+          </p>
         </div>
       </section>
 
