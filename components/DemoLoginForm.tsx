@@ -1,10 +1,9 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function DemoLoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const nextPath = searchParams.get("next") || "/faust-demo";
@@ -12,12 +11,12 @@ export default function DemoLoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setError("");
+    setError(false);
     setIsSubmitting(true);
 
     try {
@@ -32,17 +31,13 @@ export default function DemoLoginForm() {
         }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data?.message || "Invalid username or password.");
+        throw new Error("login_failed");
       }
 
       window.location.href = nextPath;
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Login failed. Please try again."
-      );
+    } catch {
+      setError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -94,8 +89,11 @@ export default function DemoLoginForm() {
         </div>
 
         {error && (
-          <div className="rounded-2xl border border-red-400/40 bg-red-500/10 p-3 text-sm text-red-100">
-            {error}
+          <div className="rounded-2xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-100">
+            <p className="font-semibold">Access check failed.</p>
+            <p className="mt-1 leading-6">
+              This demo is protected, just like your conversations should be.
+            </p>
           </div>
         )}
 
@@ -104,7 +102,7 @@ export default function DemoLoginForm() {
           disabled={isSubmitting}
           className="w-full rounded-xl bg-[#2EC4B6] px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[#5bd8cd] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSubmitting ? "Signing in..." : "Sign in"}
+          {isSubmitting ? "Checking access..." : "Sign in"}
         </button>
       </form>
 

@@ -111,6 +111,9 @@ export default function FAQPage() {
                 </span>{" "}
                 by ConvoSatya
               </h1>
+              <p className="mt-3 text-[14px] font-medium text-[#2EC4B6]">
+                Straight answers. No suspicious fine print.
+              </p>
             </div>
           </div>
         </section>
