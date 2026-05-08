@@ -26,11 +26,6 @@ export default async function FaustDemoPage() {
               Conversational scam detection in real time
             </h1>
 
-            <p className="max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-              Test FAUST with a simulated conversation. Messages appear instantly
-              while the system analyzes safety signals in the background.
-            </p>
-
             <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-slate-500">
               <p>
                 Signed in as{" "}

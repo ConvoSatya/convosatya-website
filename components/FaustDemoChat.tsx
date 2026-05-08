@@ -136,18 +136,10 @@ export default function FaustDemoChat({
   const [apiError, setApiError] = useState<string | null>(null);
   const [usageLoadedFromServer, setUsageLoadedFromServer] = useState(false);
 
-  /**
-   * 1. Load browser-stored conversation state first.
-   * This restores visible messages and encrypted_state_token.
-   */
   useEffect(() => {
     saveStoredState(demoState);
   }, [demoState]);
 
-  /**
-   * 2. Then fetch authoritative quota/usage from the server.
-   * This prevents localStorage from showing stale 0 / 30 usage.
-   */
   useEffect(() => {
     let cancelled = false;
 
@@ -184,11 +176,6 @@ export default function FaustDemoChat({
     };
   }, [demoUserId]);
 
-  /**
-   * 3. Save state to localStorage after local/server state updates.
-   * This stores visible chat and encrypted token, but quota is always refreshed
-   * again from /api/session when the page opens.
-   */
   useEffect(() => {
     saveStoredState(demoState);
   }, [demoState]);
@@ -196,15 +183,14 @@ export default function FaustDemoChat({
   const usage = demoState.usage || defaultUsage;
   const progress = demoState.progress || defaultProgress;
 
+  const messageLimitReached =
+    usageLoadedFromServer && usage.messages_used >= usage.messages_limit;
+
   const queueLabel = useMemo(() => {
     const queuedTurns = analysisQueue.map((msg) => msg.turn);
 
-    if (isAnalyzing && queuedTurns.length > 0) {
-      return `Analyzing now · queued turns: ${queuedTurns.join(", ")}`;
-    }
-
     if (isAnalyzing) {
-      return "Analyzing latest message";
+      return "FAUST is checking if this smells phishy...";
     }
 
     if (queuedTurns.length > 0) {
@@ -217,10 +203,6 @@ export default function FaustDemoChat({
   function clearConversation() {
     const fresh = createDefaultState(demoUserId);
 
-    /**
-     * Keep the server quota visible after clearing the local conversation.
-     * Clear Conversation should reset chat/state only, not database usage.
-     */
     fresh.usage = demoState.usage;
 
     setDemoState(fresh);
@@ -233,7 +215,15 @@ export default function FaustDemoChat({
     }
   }
 
+  function openAccessRequest() {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("open-access-modal"));
+    }
+  }
+
   function sendMessage(speaker: Speaker) {
+    if (messageLimitReached) return;
+
     const text = speaker === "User" ? userText.trim() : otherText.trim();
     if (!text) return;
 
@@ -261,10 +251,6 @@ export default function FaustDemoChat({
     setAnalysisQueue((prev) => [...prev, message]);
   }
 
-  /**
-   * Frontend mutex queue:
-   * messages appear instantly, but backend analysis runs one message at a time.
-   */
   useEffect(() => {
     if (isAnalyzing) return;
     if (analysisQueue.length === 0) return;
@@ -340,6 +326,24 @@ export default function FaustDemoChat({
           </div>
         </div>
 
+        {messageLimitReached && (
+          <div className="mb-4 rounded-2xl border border-[#2EC4B6]/35 bg-[#2EC4B6]/10 p-4 text-sm text-[#D7FFFB]">
+            <p className="font-semibold text-[#8BE3DA]">Demo limit reached.</p>
+            <p className="mt-1 leading-6 text-slate-200">
+              FAUST has done its shift for this account. Request extended access
+              if you need a longer evaluation.
+            </p>
+
+            <button
+              type="button"
+              onClick={openAccessRequest}
+              className="mt-3 rounded-xl bg-[#2EC4B6] px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-[#5bd8cd]"
+            >
+              Request extended access
+            </button>
+          </div>
+        )}
+
         {demoState.alert && (
           <div className="mb-4 rounded-2xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-100">
             <p className="font-semibold text-red-200">
@@ -359,12 +363,12 @@ export default function FaustDemoChat({
         <div className="h-[460px] overflow-y-auto rounded-2xl border border-white/10 bg-black/25 p-4">
           {demoState.messages.length === 0 ? (
             <div className="flex h-full items-center justify-center text-center">
-              <div>
-                <p className="text-sm font-medium text-slate-300">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-5">
+                <p className="text-sm font-semibold text-slate-200">
                   No messages yet.
                 </p>
-                <p className="mt-2 text-xs text-slate-500">
-                  Start by sending a message from either side.
+                <p className="mt-2 text-xs leading-5 text-slate-500">
+                  Even scammers need a first turn.
                 </p>
               </div>
             </div>
@@ -405,12 +409,14 @@ export default function FaustDemoChat({
               value={userText}
               onChange={(event) => setUserText(event.target.value)}
               placeholder="Type as User..."
-              className="h-24 w-full resize-none rounded-2xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-[#2EC4B6]/60"
+              disabled={messageLimitReached}
+              className="h-24 w-full resize-none rounded-2xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-[#2EC4B6]/60 disabled:cursor-not-allowed disabled:opacity-50"
             />
             <button
               type="button"
               onClick={() => sendMessage("User")}
-              className="mt-2 w-full rounded-xl bg-[#2EC4B6] px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[#5bd8cd]"
+              disabled={messageLimitReached}
+              className="mt-2 w-full rounded-xl bg-[#2EC4B6] px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[#5bd8cd] disabled:cursor-not-allowed disabled:opacity-50"
             >
               Send as User
             </button>
@@ -421,12 +427,14 @@ export default function FaustDemoChat({
               value={otherText}
               onChange={(event) => setOtherText(event.target.value)}
               placeholder="Type as Other Person..."
-              className="h-24 w-full resize-none rounded-2xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-red-400/60"
+              disabled={messageLimitReached}
+              className="h-24 w-full resize-none rounded-2xl border border-white/10 bg-black/30 p-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-red-400/60 disabled:cursor-not-allowed disabled:opacity-50"
             />
             <button
               type="button"
               onClick={() => sendMessage("Other Person")}
-              className="mt-2 w-full rounded-xl bg-red-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-400"
+              disabled={messageLimitReached}
+              className="mt-2 w-full rounded-xl bg-red-500 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-400 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Send as Other Person
             </button>
@@ -520,8 +528,7 @@ export default function FaustDemoChat({
           </div>
 
           <p className="pt-3 text-xs leading-5 text-slate-500">
-            Messages appear instantly. FAUST analyzes queued messages one at a
-            time using an encrypted backend state token.
+            FAUST analyzes queued messages using an encrypted backend state token.
           </p>
         </div>
       </aside>
