@@ -162,6 +162,9 @@ export default function Footer() {
           <p className="text-[13px] text-white/75 mt-3">
             Backed by Academic Research
           </p>
+          <p className="mt-2 max-w-[280px] text-[13px] leading-6 text-white/55">
+            Built to detect scams before they become damage.
+          </p>
         </div>
       </div>
 
