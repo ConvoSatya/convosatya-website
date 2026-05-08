@@ -13,6 +13,7 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "ConvoSatya",
+  alternateName: ["Convo Satya", "convosatya", "convo satya"],
   url: "https://www.convosatya.com",
   logo: "https://www.convosatya.com/ConvoSatya.png",
   description:
@@ -50,6 +51,7 @@ const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "ConvoSatya",
+  alternateName: ["Convo Satya", "convosatya", "convo satya"],
   url: "https://www.convosatya.com",
   description:
     "ConvoSatya is a cybersecurity startup building FAUST, an AI-powered conversational scam detection product.",
