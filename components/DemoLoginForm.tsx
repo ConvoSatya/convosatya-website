@@ -107,7 +107,7 @@ export default function DemoLoginForm() {
       </form>
 
       <p className="mt-5 text-center text-xs leading-5 text-slate-500">
-        Access is currently limited to approved stakeholders.
+        Access is currently limited.
       </p>
     </div>
   );
