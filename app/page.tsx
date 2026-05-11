@@ -5,8 +5,6 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import ProblemStats from "../components/ProblemStats";
 import PlatformCapabilities from "../components/PlatformCapabilities";
-import OnDeviceComingSoon from "../components/OnDeviceComingSoon";
-import ScamReportingSection from "../components/ScamReportingSection";
 import Footer from "../components/Footer";
 
 const organizationSchema = {
@@ -63,7 +61,7 @@ const websiteSchema = {
 };
 
 export const metadata: Metadata = {
-  title: "ConvoSatya — AI Scam Detection",
+  title: "ConvoSatya - AI Scam Detection",
   description:
     "ConvoSatya builds FAUST, an AI-powered conversational scam detection product that helps identify phishing, impersonation, and social engineering attacks across multi-turn conversations.",
   keywords: [
@@ -77,7 +75,7 @@ export const metadata: Metadata = {
     "social engineering detection",
   ],
   openGraph: {
-    title: "ConvoSatya — AI Scam Detection",
+    title: "ConvoSatya - AI Scam Detection",
     description:
       "FAUST by ConvoSatya helps detect conversational scams, phishing, impersonation, and fraud using AI-powered multi-turn analysis.",
     url: "https://www.convosatya.com",
@@ -97,8 +95,6 @@ export default function Home() {
       <Hero />
       <ProblemStats />
       <PlatformCapabilities />
-      <OnDeviceComingSoon />
-      <ScamReportingSection />
       <Footer />
     </>
   );
