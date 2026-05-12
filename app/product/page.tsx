@@ -16,26 +16,73 @@ export default function ProductPage() {
         <>
             <Navbar />
 
-            <main>
-                <section className="relative px-6 pb-12 pt-32 sm:px-10 lg:px-24">
+            <main className="bg-black">
+                {/* Hero Section */}
+                <section className="relative px-6 pb-16 pt-32 sm:px-10 lg:px-24">
                     <div className="mx-auto max-w-5xl text-center">
                         <p className="mb-5 text-sm font-semibold uppercase tracking-[0.3em] text-teal-400">
                             Product
                         </p>
 
-                        <h1 className="text-5xl font-bold tracking-tight text-white sm:text-6xl">
-                            Explore ConvoSatya
+                        <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl">
+                            Protection before and after a scam
                         </h1>
 
                         <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/60">
-                            A deeper look at how FAUST supports privacy-first scam detection
-                            and helps users organize evidence after suspicious conversations.
+                            FAUST helps people detect risky conversations before they act, and organize evidence if something already happened.
                         </p>
                     </div>
                 </section>
 
-                <OnDeviceComingSoon />
-                <ScamReportingSection />
+                {/* Overview Cards Section */}
+                <section className="px-6 pb-24 sm:px-10 lg:px-24">
+                    <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 md:grid-cols-2">
+                        {/* Card 1 */}
+                        <div className="flex flex-col rounded-3xl border border-white/10 bg-white/[0.025] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)] transition hover:border-teal-400/35 hover:bg-white/[0.04]">
+                            <div className="mb-5 inline-flex self-start rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-teal-400">
+                                Before harm happens
+                            </div>
+                            <h2 className="text-2xl font-bold text-white sm:text-3xl">
+                                Detect risky conversations
+                            </h2>
+                            <p className="mt-4 flex-1 text-base leading-7 text-white/60">
+                                Analyze conversation context, suspicious links, urgency, impersonation, and payment requests before the user responds.
+                            </p>
+                            <a
+                                href="#on-device"
+                                className="mt-8 inline-flex self-start rounded-full bg-teal-400 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-teal-300"
+                            >
+                                View on-device module
+                            </a>
+                        </div>
+
+                        {/* Card 2 */}
+                        <div className="flex flex-col rounded-3xl border border-white/10 bg-white/[0.025] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.35)] transition hover:border-teal-400/35 hover:bg-white/[0.04]">
+                            <div className="mb-5 inline-flex self-start rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.1em] text-teal-400">
+                                After something goes wrong
+                            </div>
+                            <h2 className="text-2xl font-bold text-white sm:text-3xl">
+                                Prepare a clearer report
+                            </h2>
+                            <p className="mt-4 flex-1 text-base leading-7 text-white/60">
+                                Organize messages, extract risk signals, and turn scattered evidence into a timeline users can act on.
+                            </p>
+                            <a
+                                href="#reporting"
+                                className="mt-8 inline-flex self-start rounded-full border border-white/15 bg-transparent px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/30 hover:bg-white/5"
+                            >
+                                View reporting workflow
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <div id="on-device">
+                    <OnDeviceComingSoon />
+                </div>
+                <div id="reporting">
+                    <ScamReportingSection />
+                </div>
             </main>
 
             <Footer />
