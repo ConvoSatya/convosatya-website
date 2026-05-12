@@ -152,6 +152,13 @@ export default function Footer() {
 
           <div className="flex flex-col gap-2.5">
             <Link
+              href="/product"
+              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
+            >
+              Product
+            </Link>
+
+            <Link
               href="/faust-demo"
               className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
             >
@@ -163,6 +170,13 @@ export default function Footer() {
               className="text-[15px] text-white/75 no-underline transition-colors hover:text-white"
             >
               FAQ
+            </Link>
+
+            <Link
+              href="/team"
+              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
+            >
+              Team
             </Link>
 
             <button
