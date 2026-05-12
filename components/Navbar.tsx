@@ -24,7 +24,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 w-full z-[1000] transition-all duration-300 border-b ${scrolled
+      className={`fixed top-0 w-full z-[1000] transition-all duration-200 border-b ${scrolled
         ? "bg-black/70 backdrop-blur-md border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
         : "bg-transparent border-transparent"
         }`}
@@ -42,7 +42,7 @@ export default function Navbar() {
             width={32}
             height={32}
             priority
-            className="group-hover:scale-105 transition-transform"
+            className="group-hover:scale-105 active:scale-95 transition-transform"
           />
           <span className="text-base sm:text-xl tracking-tight">
             <span className="font-semibold text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]">Convo</span>
@@ -55,21 +55,21 @@ export default function Navbar() {
         <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
           <Link
             href="/product"
-            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
+            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
             style={{ color: "rgba(255,255,255,0.85)" }}
           >
             Product
           </Link>
           <Link
             href="/faust-demo"
-            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
+            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
             style={{ color: "rgba(255,255,255,0.85)" }}
           >
             Demo
           </Link>
           <Link
             href="/faq"
-            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
+            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
             style={{ color: "rgba(255,255,255,0.85)" }}
           >
             FAQ

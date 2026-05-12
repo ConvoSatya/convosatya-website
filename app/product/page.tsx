@@ -48,12 +48,6 @@ export default function ProductPage() {
                             <p className="mt-4 flex-1 text-base leading-7 text-white/60">
                                 Analyze conversation context, suspicious links, urgency, impersonation, and payment requests before the user responds.
                             </p>
-                            <a
-                                href="#on-device"
-                                className="mt-8 inline-flex self-start rounded-full bg-teal-400 px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-teal-300"
-                            >
-                                View on-device module
-                            </a>
                         </div>
 
                         {/* Card 2 */}
@@ -67,12 +61,6 @@ export default function ProductPage() {
                             <p className="mt-4 flex-1 text-base leading-7 text-white/60">
                                 Organize messages, extract risk signals, and turn scattered evidence into a timeline users can act on.
                             </p>
-                            <a
-                                href="#reporting"
-                                className="mt-8 inline-flex self-start rounded-full border border-white/15 bg-transparent px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/30 hover:bg-white/5"
-                            >
-                                View reporting workflow
-                            </a>
                         </div>
                     </div>
                 </section>

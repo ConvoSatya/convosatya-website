@@ -74,7 +74,7 @@ export default function Hero() {
       }}
     >
       {/* Subtle floating glow for "alive" feel */}
-      <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-blue-500/20 blur-[120px] animate-float-glow pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-blue-500/20 blur-[60px] md:blur-[120px] animate-float-glow pointer-events-none z-0" />
 
       {/* Container */}
       <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-8 items-center relative z-10">
@@ -263,7 +263,7 @@ export default function Hero() {
               )}
 
               {step >= 13 && (
-                <div className={`self-start max-w-[82%] rounded-[22px] rounded-tl-[6px] px-4 py-2.5 shadow-sm transition-all duration-500 animate-[fadeUp_0.4s_ease_out_forwards] z-30 ${step === 14 ? 'bg-red-500/10 border border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.2)]' : 'bg-[#1A1F2D] border border-white/5'}`}>
+                <div className={`self-start max-w-[82%] rounded-[22px] rounded-tl-[6px] px-4 py-2.5 shadow-sm transition-all duration-300 animate-[fadeUp_0.4s_ease_out_forwards] z-30 ${step === 14 ? 'bg-red-500/10 border border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.2)]' : 'bg-[#1A1F2D] border border-white/5'}`}>
                   <p className="m-0 text-[14px] leading-snug text-white/90">
                     Here, use this link: <span className="text-blue-400 underline decoration-blue-400/50 underline-offset-2">bit.ly/auth-sec</span>
                   </p>

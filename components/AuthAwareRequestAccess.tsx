@@ -34,7 +34,7 @@ export default function AuthAwareRequestAccess() {
     return (
         <Link
         href="/faust-demo"
-        className="inline-flex items-center justify-center rounded-full bg-[#2EC4B6] px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[#5bd8cd] no-underline"
+        className="inline-flex items-center justify-center rounded-full bg-[#2EC4B6] px-6 py-3 text-sm font-semibold text-slate-950 transition-all duration-200 hover:bg-[#5bd8cd] active:scale-95 no-underline"
         >
         Go to Demo
         </Link>
@@ -44,7 +44,7 @@ export default function AuthAwareRequestAccess() {
   return (
     <Link
       href="/platform"
-      className="inline-flex items-center justify-center rounded-full bg-[#2EC4B6] px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[#5bd8cd] no-underline"
+      className="inline-flex items-center justify-center rounded-full bg-[#2EC4B6] px-6 py-3 text-sm font-semibold text-slate-950 transition-all duration-200 hover:bg-[#5bd8cd] active:scale-95 no-underline"
     >
       Request Early Platform Access
     </Link>
