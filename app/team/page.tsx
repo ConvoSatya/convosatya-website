@@ -17,7 +17,7 @@ const founders = [
         image: "/team/omar.png",
         bio: "Omar leads the AI cybersecurity research and technical direction behind ConvoSatya. He started the FAUST scam detection system and focuses on turning research into practical protection for real-world conversational scams.",
         linkedin: "https://www.linkedin.com/in/ahmed-omars/",
-        portfolio: "https://ahmedomar.netlify.app/",
+        portfolio: "https://ahmedomar.org/",
     },
     {
         name: "Yogananda Manjunath",
