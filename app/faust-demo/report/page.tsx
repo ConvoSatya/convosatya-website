@@ -29,8 +29,39 @@ type ReportDraft = {
   report_files?: Record<string, string>;
 };
 
+const INCIDENT_STATUS_OPTIONS = [
+  { value: "attempted_scam", label: "Attempted scam" },
+  { value: "successful_scam", label: "Successful scam" },
+  { value: "user_reported_concern", label: "User-reported concern" },
+  { value: "unclear", label: "Unclear" },
+];
+
+const SCAM_STATUS_OPTIONS = [
+  { value: "at_risk", label: "At risk" },
+  { value: "victim", label: "Already scammed" },
+  { value: "not_scammed", label: "No confirmed scam" },
+  { value: "unclear", label: "Unclear" },
+];
+
 function listToLines(value?: string[]): string {
   return Array.isArray(value) ? value.join("\n") : "";
+}
+
+function humanizeStatus(value?: string) {
+  if (!value) return "Not provided";
+
+  const statusMap: Record<string, string> = {
+    attempted_scam: "Attempted scam",
+    successful_scam: "Successful scam",
+    user_reported_concern: "User-reported concern",
+    unclear: "Unclear",
+    at_risk: "At risk",
+    victim: "Already scammed",
+    not_scammed: "No confirmed scam",
+    none: "No confirmed victimization",
+  };
+
+  return statusMap[value] || value.replace(/_/g, " ");
 }
 
 function downloadTextFile(filename: string, content: string) {
@@ -56,7 +87,6 @@ export default function FaustReportPage() {
 
   const [location, setLocation] = useState("");
   const [additionalDetails, setAdditionalDetails] = useState("");
-  const [incidentStatus, setIncidentStatus] = useState("");
 
   const [report, setReport] = useState<ReportDraft | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -83,9 +113,12 @@ export default function FaustReportPage() {
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      const token = window.sessionStorage.getItem("faust_encrypted_state_token");
+      const token = window.sessionStorage.getItem(
+        "faust_encrypted_state_token"
+      );
       const pendingFlag =
-        window.sessionStorage.getItem("faust_report_pending_analysis") === "true";
+        window.sessionStorage.getItem("faust_report_pending_analysis") ===
+        "true";
 
       setEncryptedStateToken(token);
       setOpenedWithPendingAnalysis(pendingFlag);
@@ -97,8 +130,8 @@ export default function FaustReportPage() {
   function hydrateEditableFields(draft: ReportDraft) {
     const evidence = draft.extracted_evidence || {};
 
-    setEditableIncidentStatus(draft.incident_status || "");
-    setEditableScamStatus(draft.scam_status || "");
+    setEditableIncidentStatus(draft.incident_status || "unclear");
+    setEditableScamStatus(draft.scam_status || "unclear");
     setEditableScamType(draft.scam_type || "");
     setEditableIncidentSummary(draft.incident_summary || "");
     setEditableMoneyLost(Boolean(evidence.money_lost));
@@ -133,7 +166,7 @@ export default function FaustReportPage() {
         body: JSON.stringify({
           encrypted_state_token: encryptedStateToken,
           user_location: location,
-          incident_status: incidentStatus,
+          incident_status: "",
           additional_details: additionalDetails,
         }),
       });
@@ -149,7 +182,6 @@ export default function FaustReportPage() {
       const draft = data.report as ReportDraft;
       setReport(draft);
       hydrateEditableFields(draft);
-      setIncidentStatus(draft.incident_status || "");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not generate report draft."
@@ -177,7 +209,7 @@ export default function FaustReportPage() {
         body: JSON.stringify({
           encrypted_state_token: encryptedStateToken,
           user_location: location,
-          incident_status: incidentStatus,
+          incident_status: editableIncidentStatus,
           additional_details: additionalDetails,
         }),
       });
@@ -226,10 +258,10 @@ Location / jurisdiction:
 ${location || "Not provided"}
 
 Incident status:
-${editableIncidentStatus || "Not provided"}
+${humanizeStatus(editableIncidentStatus)}
 
 Scam status:
-${editableScamStatus || "Not provided"}
+${humanizeStatus(editableScamStatus)}
 
 Suspected scam type:
 ${editableScamType || "Not provided"}
@@ -392,26 +424,6 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
 
                   <div>
                     <label className="mb-2 block text-sm font-medium text-slate-300">
-                      Incident status
-                    </label>
-                    <select
-                      value={incidentStatus}
-                      onChange={(event) =>
-                        setIncidentStatus(event.target.value)
-                      }
-                      className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-[#2EC4B6]/60"
-                    >
-                      <option value="successful_scam">Successful scam</option>
-                      <option value="attempted_scam">Attempted scam</option>
-                      <option value="unclear">Unclear</option>
-                      <option value="user_reported_concern">
-                        User-reported concern
-                      </option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-300">
                       Additional details
                     </label>
                     <textarea
@@ -436,7 +448,7 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                   <button
                     type="button"
                     onClick={downloadBackendZipPackage}
-                    disabled={isDownloadingZip}
+                    disabled={isDownloadingZip || !report}
                     className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isDownloadingZip
@@ -445,8 +457,8 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                   </button>
 
                   <p className="text-xs leading-5 text-slate-500">
-                    The ZIP uses the backend-generated report. The individual
-                    TXT downloads below use your edits on this page.
+                    Generate the draft first. Then review or edit the report
+                    fields before downloading individual TXT files.
                   </p>
                 </div>
 
@@ -464,30 +476,42 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       No report draft generated yet.
                     </p>
                     <p className="mt-2 text-sm leading-6 text-slate-400">
-                      Enter a location if available, then generate the draft.
+                      Add a location if available, then generate the draft. FAUST
+                      will fill the incident status based on the analyzed
+                      conversation.
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-6">
                     <EditableSection title="Incident details">
                       <Field label="Incident status">
-                        <input
-                          value={editableIncidentStatus}
+                        <select
+                          value={editableIncidentStatus || "unclear"}
                           onChange={(e) =>
                             setEditableIncidentStatus(e.target.value)
                           }
                           className="report-input"
-                        />
+                        >
+                          {INCIDENT_STATUS_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
                       </Field>
 
                       <Field label="Scam status">
-                        <input
-                          value={editableScamStatus}
-                          onChange={(e) =>
-                            setEditableScamStatus(e.target.value)
-                          }
+                        <select
+                          value={editableScamStatus || "unclear"}
+                          onChange={(e) => setEditableScamStatus(e.target.value)}
                           className="report-input"
-                        />
+                        >
+                          {SCAM_STATUS_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
                       </Field>
 
                       <Field label="Suspected scam type">
@@ -692,6 +716,11 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
 
         .report-textarea:focus {
           border-color: rgba(46, 196, 182, 0.6);
+        }
+
+        .report-input option {
+          background: #020617;
+          color: white;
         }
       `}</style>
     </main>
