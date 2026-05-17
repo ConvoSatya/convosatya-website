@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type Speaker = "User" | "Other Person";
 
@@ -36,6 +37,8 @@ type Alert = {
   severity?: string;
 } | null;
 
+type ScamStatus = "not_scammed" | "at_risk" | "victim" | "unclear";
+
 type StoredDemoState = {
   demo_user_id: string;
   messages: DemoMessage[];
@@ -44,6 +47,8 @@ type StoredDemoState = {
   usage: Usage | null;
   progress: Progress;
   alert: Alert;
+  scam_status: ScamStatus;
+  analysis_queue: DemoMessage[];
 };
 
 type FaustDemoChatProps = {
@@ -87,6 +92,8 @@ function createDefaultState(
     usage: null,
     progress: defaultProgress,
     alert: null,
+    scam_status: "unclear",
+    analysis_queue: [],
   };
 }
 
@@ -98,7 +105,9 @@ function loadStoredState(demoUserId: string): StoredDemoState {
   const storageKey = getStorageKey(demoUserId);
   const raw = window.localStorage.getItem(storageKey);
 
-  if (!raw) return createDefaultState(demoUserId);
+  if (!raw) {
+    return createDefaultState(demoUserId);
+  }
 
   try {
     const parsed = JSON.parse(raw) as StoredDemoState;
@@ -109,6 +118,8 @@ function loadStoredState(demoUserId: string): StoredDemoState {
       demo_user_id: parsed.demo_user_id || demoUserId,
       progress: parsed.progress || defaultProgress,
       usage: parsed.usage || null,
+      scam_status: parsed.scam_status || "unclear",
+      analysis_queue: parsed.analysis_queue || [],
     };
   } catch {
     return createDefaultState(demoUserId);
@@ -125,20 +136,44 @@ function saveStoredState(state: StoredDemoState) {
 export default function FaustDemoChat({
   demoUserId = "stakeholder_demo",
 }: FaustDemoChatProps) {
+  const router = useRouter();
+
   const [demoState, setDemoState] = useState<StoredDemoState>(() =>
-    loadStoredState(demoUserId)
+    createDefaultState(demoUserId)
   );
 
   const [userText, setUserText] = useState("");
   const [otherText, setOtherText] = useState("");
-  const [analysisQueue, setAnalysisQueue] = useState<DemoMessage[]>([]);
+  const [analysisHalted, setAnalysisHalted] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [usageLoadedFromServer, setUsageLoadedFromServer] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  const analysisQueue = demoState.analysis_queue || [];
 
   useEffect(() => {
+    setHasMounted(true);
+    setDemoState(loadStoredState(demoUserId));
+  }, [demoUserId]);
+
+  useEffect(() => {
+    if (!hasMounted) return;
     saveStoredState(demoState);
-  }, [demoState]);
+  }, [demoState, hasMounted]);
+
+  useEffect(() => {
+    if (!hasMounted) return;
+
+    window.sessionStorage.setItem("faust_demo_user_id", demoUserId);
+
+    if (demoState.encrypted_state_token) {
+      window.sessionStorage.setItem(
+        "faust_encrypted_state_token",
+        demoState.encrypted_state_token
+      );
+    }
+  }, [hasMounted, demoUserId, demoState.encrypted_state_token]);
 
   useEffect(() => {
     let cancelled = false;
@@ -176,18 +211,25 @@ export default function FaustDemoChat({
     };
   }, [demoUserId]);
 
-  useEffect(() => {
-    saveStoredState(demoState);
-  }, [demoState]);
-
   const usage = demoState.usage || defaultUsage;
   const progress = demoState.progress || defaultProgress;
 
   const messageLimitReached =
     usageLoadedFromServer && usage.messages_used >= usage.messages_limit;
 
+  const hasPendingAnalysis =
+    hasMounted && (isAnalyzing || analysisQueue.length > 0);
+
   const queueLabel = useMemo(() => {
+    if (!hasMounted) {
+      return "Queue empty";
+    }
+
     const queuedTurns = analysisQueue.map((msg) => msg.turn);
+
+    if (analysisHalted && queuedTurns.length > 0) {
+      return `Analysis paused. ${queuedTurns.length} turn(s) waiting.`;
+    }
 
     if (isAnalyzing) {
       return "FAUST is checking if this smells phishy...";
@@ -198,21 +240,52 @@ export default function FaustDemoChat({
     }
 
     return "Queue empty";
-  }, [analysisQueue, isAnalyzing]);
+  }, [hasMounted, analysisQueue, isAnalyzing, analysisHalted]);
 
   function clearConversation() {
     const fresh = createDefaultState(demoUserId);
-
     fresh.usage = demoState.usage;
 
     setDemoState(fresh);
-    setAnalysisQueue([]);
+    setAnalysisHalted(false);
     setIsAnalyzing(false);
     setApiError(null);
 
     if (typeof window !== "undefined") {
       window.localStorage.removeItem(getStorageKey(demoUserId));
+      window.sessionStorage.removeItem("faust_encrypted_state_token");
     }
+  }
+
+  function retryAnalysisQueue() {
+    setApiError(null);
+    setAnalysisHalted(false);
+  }
+
+  function openReportBuilder() {
+    if (hasPendingAnalysis) {
+      setApiError(
+        "Please wait until FAUST finishes analyzing the queued messages before generating a report."
+      );
+      return;
+    }
+
+    if (!demoState.encrypted_state_token || demoState.messages.length === 0) {
+      setApiError(
+        "No analyzed conversation is available yet. Send a message and wait for FAUST to finish analyzing it."
+      );
+      return;
+    }
+
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem("faust_demo_user_id", demoUserId);
+      window.sessionStorage.setItem(
+        "faust_encrypted_state_token",
+        demoState.encrypted_state_token
+      );
+    }
+
+    router.push("/faust-demo/report");
   }
 
   function openAccessRequest() {
@@ -236,6 +309,7 @@ export default function FaustDemoChat({
       demo_user_id: demoUserId,
       messages: [...demoState.messages, message],
       turn: demoState.turn + 1,
+      analysis_queue: [...(demoState.analysis_queue || []), message],
     };
 
     setDemoState(updatedState);
@@ -246,19 +320,20 @@ export default function FaustDemoChat({
       setOtherText("");
     }
 
-    setAnalysisQueue((prev) => [...prev, message]);
+    setAnalysisHalted(false);
   }
 
   useEffect(() => {
+    if (!hasMounted) return;
     if (isAnalyzing) return;
+    if (analysisHalted) return;
     if (analysisQueue.length === 0) return;
 
-    const [nextMessage, ...remaining] = analysisQueue;
+    const nextMessage = analysisQueue[0];
 
     async function analyzeNextMessage() {
       setIsAnalyzing(true);
       setApiError(null);
-      setAnalysisQueue(remaining);
 
       try {
         const response = await fetch("/api/faust/analyze-turn", {
@@ -290,6 +365,10 @@ export default function FaustDemoChat({
           usage: data.usage,
           progress: data.progress,
           alert: data.alert || null,
+          scam_status: data.scam_status || prev.scam_status || "unclear",
+          analysis_queue: (prev.analysis_queue || []).filter(
+            (msg) => msg.turn !== nextMessage.turn
+          ),
         }));
       } catch (error) {
         const message =
@@ -298,13 +377,45 @@ export default function FaustDemoChat({
             : "Could not reach the FAUST backend.";
 
         setApiError(message);
+        setAnalysisHalted(true);
       } finally {
         setIsAnalyzing(false);
       }
     }
 
     analyzeNextMessage();
-  }, [analysisQueue, isAnalyzing, demoState, demoUserId]);
+  }, [
+    hasMounted,
+    analysisQueue,
+    analysisHalted,
+    isAnalyzing,
+    demoState.encrypted_state_token,
+    demoUserId,
+  ]);
+
+  const reportButtonStyle = useMemo(() => {
+    if (demoState.scam_status === "victim") {
+      return {
+        label: "Generate Recovery Report",
+        className:
+          "w-full rounded-xl border border-red-400/70 bg-red-500/15 px-4 py-3 text-sm font-semibold text-red-100 shadow-[0_0_22px_rgba(248,113,113,0.35)] transition hover:bg-red-500/25 hover:shadow-[0_0_30px_rgba(248,113,113,0.5)] disabled:cursor-not-allowed disabled:opacity-50",
+      };
+    }
+
+    if (demoState.scam_status === "at_risk") {
+      return {
+        label: "Generate Safety Report",
+        className:
+          "w-full rounded-xl border border-yellow-300/70 bg-yellow-400/15 px-4 py-3 text-sm font-semibold text-yellow-100 shadow-[0_0_22px_rgba(250,204,21,0.28)] transition hover:bg-yellow-400/25 hover:shadow-[0_0_30px_rgba(250,204,21,0.42)] disabled:cursor-not-allowed disabled:opacity-50",
+      };
+    }
+
+    return {
+      label: "Generate Report",
+      className:
+        "w-full rounded-xl bg-[#2EC4B6] px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[#5bd8cd] disabled:cursor-not-allowed disabled:opacity-50",
+    };
+  }, [demoState.scam_status]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
@@ -355,6 +466,16 @@ export default function FaustDemoChat({
           <div className="mb-4 rounded-2xl border border-yellow-400/40 bg-yellow-500/10 p-4 text-sm text-yellow-100">
             <p className="font-semibold">Backend connection issue</p>
             <p className="mt-1 leading-6">{apiError}</p>
+
+            {analysisQueue.length > 0 && (
+              <button
+                type="button"
+                onClick={retryAnalysisQueue}
+                className="mt-3 rounded-xl bg-yellow-300 px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-yellow-200"
+              >
+                Retry queued analysis
+              </button>
+            )}
           </div>
         )}
 
@@ -439,13 +560,28 @@ export default function FaustDemoChat({
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={clearConversation}
-          className="mt-4 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/10"
-        >
-          Clear Conversation
-        </button>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={openReportBuilder}
+            disabled={
+              hasPendingAnalysis ||
+              !demoState.encrypted_state_token ||
+              demoState.messages.length === 0
+            }
+            className={reportButtonStyle.className}
+          >
+            {hasPendingAnalysis ? "Analyzing..." : reportButtonStyle.label}
+          </button>
+
+          <button
+            type="button"
+            onClick={clearConversation}
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/10"
+          >
+            Clear Conversation
+          </button>
+        </div>
       </div>
 
       <aside className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 shadow-2xl shadow-black/30 backdrop-blur">
@@ -486,7 +622,13 @@ export default function FaustDemoChat({
 
           <StatusCard
             label="Status"
-            value={isAnalyzing ? "Analyzing" : progress.analysis_status || "empty"}
+            value={
+              isAnalyzing
+                ? "Analyzing"
+                : analysisHalted
+                  ? "Analysis paused"
+                  : progress.analysis_status || "empty"
+            }
           />
 
           <div className="mt-6 rounded-2xl border border-[#2EC4B6]/20 bg-[#2EC4B6]/10 p-4">
@@ -526,7 +668,8 @@ export default function FaustDemoChat({
           </div>
 
           <p className="pt-3 text-xs leading-5 text-slate-500">
-            FAUST analyzes queued messages using an encrypted backend state token.
+            FAUST analyzes queued messages using an encrypted backend state
+            token.
           </p>
         </div>
       </aside>
