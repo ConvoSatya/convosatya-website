@@ -29,13 +29,6 @@ type ReportDraft = {
   report_files?: Record<string, string>;
 };
 
-function linesToList(value: string): string[] {
-  return value
-    .split("\n")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
 function listToLines(value?: string[]): string {
   return Array.isArray(value) ? value.join("\n") : "";
 }
@@ -58,6 +51,8 @@ export default function FaustReportPage() {
   const [encryptedStateToken, setEncryptedStateToken] = useState<string | null>(
     null
   );
+  const [openedWithPendingAnalysis, setOpenedWithPendingAnalysis] =
+    useState(false);
 
   const [location, setLocation] = useState("");
   const [additionalDetails, setAdditionalDetails] = useState("");
@@ -78,14 +73,25 @@ export default function FaustReportPage() {
   const [editableUrls, setEditableUrls] = useState("");
   const [editablePhones, setEditablePhones] = useState("");
   const [editableEmails, setEditableEmails] = useState("");
-  const [editableClaimedIdentities, setEditableClaimedIdentities] = useState("");
-  const [editableVerificationNotes, setEditableVerificationNotes] = useState("");
-  const [editableRecoveryChecklist, setEditableRecoveryChecklist] = useState("");
+  const [editableClaimedIdentities, setEditableClaimedIdentities] =
+    useState("");
+  const [editableVerificationNotes, setEditableVerificationNotes] =
+    useState("");
+  const [editableRecoveryChecklist, setEditableRecoveryChecklist] =
+    useState("");
   const [editableTranscript, setEditableTranscript] = useState("");
 
   useEffect(() => {
-    const token = window.sessionStorage.getItem("faust_encrypted_state_token");
-    setEncryptedStateToken(token);
+    const timer = window.setTimeout(() => {
+      const token = window.sessionStorage.getItem("faust_encrypted_state_token");
+      const pendingFlag =
+        window.sessionStorage.getItem("faust_report_pending_analysis") === "true";
+
+      setEncryptedStateToken(token);
+      setOpenedWithPendingAnalysis(pendingFlag);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   function hydrateEditableFields(draft: ReportDraft) {
@@ -109,7 +115,9 @@ export default function FaustReportPage() {
 
   async function generateDraft() {
     if (!encryptedStateToken) {
-      setError("No conversation state found. Return to the demo and generate a report after sending messages.");
+      setError(
+        "No conversation state found. Return to the demo and generate a report after sending messages."
+      );
       return;
     }
 
@@ -133,12 +141,15 @@ export default function FaustReportPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data?.detail || data?.message || "Could not generate report draft.");
+        throw new Error(
+          data?.detail || data?.message || "Could not generate report draft."
+        );
       }
 
       const draft = data.report as ReportDraft;
       setReport(draft);
       hydrateEditableFields(draft);
+      setIncidentStatus(draft.incident_status || "");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Could not generate report draft."
@@ -331,9 +342,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
             </h1>
 
             <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300">
-              Generate an editable report draft from the current FAUST demo conversation,
-              then download separate files for the incident summary, evidence, transcript,
-              and recovery checklist.
+              Generate an editable report draft from the current FAUST demo
+              conversation, then download separate files for the incident
+              summary, evidence, transcript, and recovery checklist.
             </p>
           </div>
 
@@ -341,8 +352,20 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
             <div className="rounded-3xl border border-yellow-400/30 bg-yellow-500/10 p-6 text-yellow-100">
               <p className="font-semibold">No conversation found for reporting.</p>
               <p className="mt-2 text-sm leading-6">
-                Return to the FAUST demo, send a few messages, and generate a report
-                after the backend has analyzed the conversation.
+                Return to the FAUST demo, send a few messages, and generate a
+                report after the backend has analyzed the conversation.
+              </p>
+            </div>
+          )}
+
+          {openedWithPendingAnalysis && encryptedStateToken && (
+            <div className="mb-6 rounded-3xl border border-yellow-300/40 bg-yellow-400/10 p-5 text-yellow-100">
+              <p className="font-semibold">This may be a partial report.</p>
+              <p className="mt-2 text-sm leading-6 text-yellow-50/90">
+                Some messages were still waiting for analysis when this report
+                was opened. The draft may not include the latest queued turns
+                yet. Return to the demo page to let FAUST finish analyzing the
+                rest of the conversation.
               </p>
             </div>
           )}
@@ -369,14 +392,15 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
 
                   <div>
                     <label className="mb-2 block text-sm font-medium text-slate-300">
-                      Incident status override
+                      Incident status
                     </label>
                     <select
                       value={incidentStatus}
-                      onChange={(event) => setIncidentStatus(event.target.value)}
+                      onChange={(event) =>
+                        setIncidentStatus(event.target.value)
+                      }
                       className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white outline-none focus:border-[#2EC4B6]/60"
                     >
-                      <option value="">Use FAUST assessment</option>
                       <option value="successful_scam">Successful scam</option>
                       <option value="attempted_scam">Attempted scam</option>
                       <option value="unclear">Unclear</option>
@@ -392,7 +416,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                     </label>
                     <textarea
                       value={additionalDetails}
-                      onChange={(event) => setAdditionalDetails(event.target.value)}
+                      onChange={(event) =>
+                        setAdditionalDetails(event.target.value)
+                      }
                       placeholder="Add details the conversation may not show, such as transaction hashes, screenshots, platform used, or bank contact status."
                       className="h-32 w-full resize-none rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-white outline-none placeholder:text-slate-500 focus:border-[#2EC4B6]/60"
                     />
@@ -419,8 +445,8 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                   </button>
 
                   <p className="text-xs leading-5 text-slate-500">
-                    The ZIP uses the backend-generated report. The individual TXT
-                    downloads below use your edits on this page.
+                    The ZIP uses the backend-generated report. The individual
+                    TXT downloads below use your edits on this page.
                   </p>
                 </div>
 
@@ -447,7 +473,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       <Field label="Incident status">
                         <input
                           value={editableIncidentStatus}
-                          onChange={(e) => setEditableIncidentStatus(e.target.value)}
+                          onChange={(e) =>
+                            setEditableIncidentStatus(e.target.value)
+                          }
                           className="report-input"
                         />
                       </Field>
@@ -455,7 +483,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       <Field label="Scam status">
                         <input
                           value={editableScamStatus}
-                          onChange={(e) => setEditableScamStatus(e.target.value)}
+                          onChange={(e) =>
+                            setEditableScamStatus(e.target.value)
+                          }
                           className="report-input"
                         />
                       </Field>
@@ -471,7 +501,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       <Field label="Incident summary">
                         <textarea
                           value={editableIncidentSummary}
-                          onChange={(e) => setEditableIncidentSummary(e.target.value)}
+                          onChange={(e) =>
+                            setEditableIncidentSummary(e.target.value)
+                          }
                           className="report-textarea h-40"
                         />
                       </Field>
@@ -482,7 +514,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                         <input
                           type="checkbox"
                           checked={editableMoneyLost}
-                          onChange={(e) => setEditableMoneyLost(e.target.checked)}
+                          onChange={(e) =>
+                            setEditableMoneyLost(e.target.checked)
+                          }
                           className="h-4 w-4"
                         />
                         Money was lost or sent
@@ -491,7 +525,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       <Field label="Money amount(s), one per line">
                         <textarea
                           value={editableMoneyAmounts}
-                          onChange={(e) => setEditableMoneyAmounts(e.target.value)}
+                          onChange={(e) =>
+                            setEditableMoneyAmounts(e.target.value)
+                          }
                           className="report-textarea h-24"
                         />
                       </Field>
@@ -499,7 +535,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       <Field label="Payment method(s), one per line">
                         <textarea
                           value={editablePaymentMethods}
-                          onChange={(e) => setEditablePaymentMethods(e.target.value)}
+                          onChange={(e) =>
+                            setEditablePaymentMethods(e.target.value)
+                          }
                           className="report-textarea h-24"
                         />
                       </Field>
@@ -555,7 +593,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       <Field label="Conversation transcript">
                         <textarea
                           value={editableTranscript}
-                          onChange={(e) => setEditableTranscript(e.target.value)}
+                          onChange={(e) =>
+                            setEditableTranscript(e.target.value)
+                          }
                           className="report-textarea h-64"
                         />
                       </Field>

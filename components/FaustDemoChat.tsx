@@ -217,7 +217,7 @@ export default function FaustDemoChat({
   const messageLimitReached =
     usageLoadedFromServer && usage.messages_used >= usage.messages_limit;
 
-  const hasPendingAnalysis =
+  const reportHasPendingAnalysis =
     hasMounted && (isAnalyzing || analysisQueue.length > 0);
 
   const queueLabel = useMemo(() => {
@@ -263,16 +263,9 @@ export default function FaustDemoChat({
   }
 
   function openReportBuilder() {
-    if (hasPendingAnalysis) {
-      setApiError(
-        "Please wait until FAUST finishes analyzing the queued messages before generating a report."
-      );
-      return;
-    }
-
     if (!demoState.encrypted_state_token || demoState.messages.length === 0) {
       setApiError(
-        "No analyzed conversation is available yet. Send a message and wait for FAUST to finish analyzing it."
+        "No analyzed conversation is available yet. Send a message and wait for FAUST to finish analyzing at least one turn."
       );
       return;
     }
@@ -282,6 +275,11 @@ export default function FaustDemoChat({
       window.sessionStorage.setItem(
         "faust_encrypted_state_token",
         demoState.encrypted_state_token
+      );
+
+      window.sessionStorage.setItem(
+        "faust_report_pending_analysis",
+        reportHasPendingAnalysis ? "true" : "false"
       );
     }
 
@@ -564,14 +562,12 @@ export default function FaustDemoChat({
           <button
             type="button"
             onClick={openReportBuilder}
-            disabled={
-              hasPendingAnalysis ||
-              !demoState.encrypted_state_token ||
-              demoState.messages.length === 0
-            }
+            disabled={!demoState.encrypted_state_token || demoState.messages.length === 0}
             className={reportButtonStyle.className}
           >
-            {hasPendingAnalysis ? "Analyzing..." : reportButtonStyle.label}
+            {reportHasPendingAnalysis
+              ? `${reportButtonStyle.label} · partial`
+              : reportButtonStyle.label}
           </button>
 
           <button
