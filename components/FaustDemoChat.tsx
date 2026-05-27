@@ -943,11 +943,7 @@ export default function FaustDemoChat({
 
         setDriveBackupNote("Safety check complete.");
       } catch (error) {
-        setApiError(
-          error instanceof Error
-            ? error.message
-            : "Could not check this message."
-        );
+        setApiError("Message not analyzed. Please try again later.");
 
         setDemoState((prev) => ({
           ...prev,
@@ -959,10 +955,7 @@ export default function FaustDemoChat({
               ? {
                   ...message,
                   analysis_status: "failed",
-                  analysis_error:
-                    error instanceof Error
-                      ? error.message
-                      : "Could not check this message.",
+                  analysis_error: "Message not analyzed. Please try again later.",
                 }
               : message
           ),
@@ -1242,7 +1235,7 @@ export default function FaustDemoChat({
         id,
         turn: prev.turn,
         speaker,
-        text: caption || "[Media sent]",
+        text: caption,
         message_type: "media",
         media_kind: attachment.media_kind,
         media_url: previewUrl,
@@ -1533,6 +1526,72 @@ export default function FaustDemoChat({
       ? "Connected"
       : "Required";
 
+  function renderMessageStatus(message: DemoMessage) {
+    if (message.drive_status === "failed") {
+      return (
+        <span className="text-red-300">
+          ⚠ Message not saved.
+        </span>
+      );
+    }
+
+    if (message.analysis_status === "failed" && message.drive_status === "saved") {
+      return (
+        <span className="text-yellow-300">
+          ⚠ Message not analyzed.
+        </span>
+      );
+    }
+
+    if (message.analysis_status === "done") {
+      return (
+        <span
+          className="font-semibold text-indigo-600"
+          title="Saved and analyzed"
+        >
+          ✓✓
+        </span>
+      );
+    }
+
+    if (message.analysis_status === "analyzing") {
+      return (
+        <span className="text-indigo-600">
+          ✓ Analyzing...
+        </span>
+      );
+    }
+
+    if (message.analysis_status === "queued") {
+      return (
+        <span className="text-indigo-600">
+          ✓ Analyzing...
+        </span>
+      );
+    }
+
+    if (message.drive_status === "saved") {
+      return (
+        <span
+          className="font-semibold text-indigo-600"
+          title="Saved securely"
+        >
+          ✓
+        </span>
+      );
+    }
+
+    if (message.drive_status === "pending") {
+      return (
+        <span className="text-indigo-600">
+          Securing...
+        </span>
+      );
+    }
+
+    return null;
+  }
+
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
       <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5 shadow-2xl shadow-black/30 backdrop-blur">
@@ -1710,53 +1769,17 @@ export default function FaustDemoChat({
                           />
                         )}
 
-                      <p className="whitespace-pre-wrap">{message.text}</p>
-
-                      {message.drive_status === "pending" && (
-                        <p className="mt-2 text-[11px] opacity-70">
-                          Securing...
-                        </p>
+                      {message.text.trim().length > 0 && (
+                        <p className="whitespace-pre-wrap">{message.text}</p>
                       )}
 
-                      {message.drive_status === "failed" && (
-                        <>
-                          <p className="mt-2 text-[11px] text-red-300">
-                            Could not save securely. Not checked.
-                          </p>
-
-                          {message.drive_error && (
-                            <p className="mt-1 text-[10px] text-red-300/80">
-                              {message.drive_error}
-                            </p>
-                          )}
-                        </>
-                      )}
-
-                      {message.analysis_status === "queued" && (
-                        <p className="mt-2 text-[11px] opacity-70">
-                          Checking soon...
-                        </p>
-                      )}
-
-                      {message.analysis_status === "analyzing" && (
-                        <p className="mt-2 text-[11px] opacity-70">
-                          Checking...
-                        </p>
-                      )}
-
-                      {message.analysis_status === "failed" && (
-                        <>
-                          <p className="mt-2 text-[11px] text-red-300">
-                            Could not check this message.
-                          </p>
-
-                          {message.analysis_error && (
-                            <p className="mt-1 text-[10px] text-red-300/80">
-                              {message.analysis_error}
-                            </p>
-                          )}
-                        </>
-                      )}
+                      <div
+                        className={`mt-1 flex items-center justify-end gap-1 text-[11px] ${
+                          isUser ? "text-slate-800/70" : "text-slate-400"
+                        }`}
+                      >
+                        {renderMessageStatus(message)}
+                      </div>
                     </div>
                   </div>
                 );
