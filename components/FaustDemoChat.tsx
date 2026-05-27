@@ -1045,6 +1045,53 @@ export default function FaustDemoChat({
     window.location.href = "/api/faust/drive/oauth/start";
   }
 
+  async function deleteMediaFilesFromDrive(driveFileIds: string[]) {
+    const uniqueFileIds = Array.from(
+      new Set(
+        driveFileIds
+          .map((fileId) => String(fileId || "").trim())
+          .filter(Boolean)
+      )
+    );
+
+    if (uniqueFileIds.length === 0) {
+      return;
+    }
+
+    const response = await fetch("/api/faust/drive/media/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+      body: JSON.stringify({
+        drive_file_ids: uniqueFileIds,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      const detail = data?.detail;
+
+      if (typeof detail === "string") {
+        throw new Error(detail);
+      }
+
+      if (detail?.message) {
+        throw new Error(detail.message);
+      }
+
+      throw new Error("Could not delete encrypted media from Drive.");
+    }
+
+    const failedFileIds = data?.delete_result?.failed_file_ids || [];
+
+    if (Array.isArray(failedFileIds) && failedFileIds.length > 0) {
+      throw new Error("Some encrypted media files could not be deleted.");
+    }
+  }
+
   async function clearConversation() {
     if (!driveConnected || !driveRestoreComplete || isClearing) return;
 
@@ -1052,12 +1099,21 @@ export default function FaustDemoChat({
     const fresh = createDefaultState(demoUserId);
     fresh.usage = previousState.usage;
 
+    const mediaFileIds = previousState.messages
+      .map((message) => message.drive_media_file_id)
+      .filter((fileId): fileId is string => Boolean(fileId));
+
     try {
       setIsClearing(true);
       setApiError(null);
       setDriveError(null);
-      setDriveBackupNote("Clearing conversation...");
 
+      if (mediaFileIds.length > 0) {
+        setDriveBackupNote("Deleting encrypted media...");
+        await deleteMediaFilesFromDrive(mediaFileIds);
+      }
+
+      setDriveBackupNote("Clearing conversation...");
       await saveSnapshotToDrive(fresh);
 
       setDemoState(fresh);
@@ -1084,14 +1140,15 @@ export default function FaustDemoChat({
     } catch (error) {
       setDemoState(previousState);
 
-      setDriveError(
+      const message =
         error instanceof Error
           ? error.message
-          : "Could not clear conversation."
-      );
+          : "Could not clear the saved conversation.";
+
+      setDriveError(message);
 
       setDriveBackupNote(
-        "Could not clear the saved conversation. The chat was kept unchanged."
+        "Could not fully clear the conversation from Drive. The chat was kept unchanged."
       );
     } finally {
       setIsClearing(false);
