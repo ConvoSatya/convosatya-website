@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -54,40 +54,9 @@ function linesToList(value: string): string[] {
     .filter(Boolean);
 }
 
-function humanizeStatus(value?: string) {
-  if (!value) return "Not provided";
-
-  const statusMap: Record<string, string> = {
-    attempted_scam: "Attempted scam",
-    successful_scam: "Successful scam",
-    user_reported_concern: "User-reported concern",
-    unclear: "Unclear",
-    at_risk: "At risk",
-    victim: "Already scammed",
-    not_scammed: "No confirmed scam",
-    none: "No confirmed victimization",
-  };
-
-  return statusMap[value] || value.replace(/_/g, " ");
-}
-
-function downloadTextFile(filename: string, content: string) {
-  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-  const url = window.URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-
-  a.remove();
-  window.URL.revokeObjectURL(url);
-}
-
 export default function FaustReportPage() {
   const [encryptedStateToken, setEncryptedStateToken] = useState<string | null>(
-    null
+    null,
   );
   const [openedWithPendingAnalysis, setOpenedWithPendingAnalysis] =
     useState(false);
@@ -114,14 +83,11 @@ export default function FaustReportPage() {
     useState("");
   const [editableVerificationNotes, setEditableVerificationNotes] =
     useState("");
-  const [editableRecoveryChecklist, setEditableRecoveryChecklist] =
-    useState("");
-  const [editableTranscript, setEditableTranscript] = useState("");
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const token = window.sessionStorage.getItem(
-        "faust_encrypted_state_token"
+        "faust_encrypted_state_token",
       );
       const pendingFlag =
         window.sessionStorage.getItem("faust_report_pending_analysis") ===
@@ -149,14 +115,12 @@ export default function FaustReportPage() {
     setEditableEmails(listToLines(evidence.emails));
     setEditableClaimedIdentities(listToLines(evidence.claimed_brands));
     setEditableVerificationNotes(listToLines(evidence.verification_notes));
-    setEditableRecoveryChecklist(listToLines(draft.recovery_checklist));
-    setEditableTranscript(draft.conversation_transcript || "");
   }
 
   async function generateDraft() {
     if (!encryptedStateToken) {
       setError(
-        "No conversation state found. Return to the demo and generate a report after sending messages."
+        "No conversation state found. Return to the demo and generate a report after sending messages.",
       );
       return;
     }
@@ -182,7 +146,7 @@ export default function FaustReportPage() {
 
       if (!response.ok) {
         throw new Error(
-          data?.detail || data?.message || "Could not generate report draft."
+          data?.detail || data?.message || "Could not generate report draft.",
         );
       }
 
@@ -191,7 +155,7 @@ export default function FaustReportPage() {
       hydrateEditableFields(draft);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Could not generate report draft."
+        err instanceof Error ? err.message : "Could not generate report draft.",
       );
     } finally {
       setIsGenerating(false);
@@ -238,9 +202,7 @@ export default function FaustReportPage() {
               money_lost: editableMoneyLost,
               money_lost_amounts: linesToList(editableMoneyAmounts),
               payment_methods: linesToList(editablePaymentMethods),
-            },
-            recovery_checklist: linesToList(editableRecoveryChecklist),
-            conversation_transcript: editableTranscript,
+            }
           },
         }),
       });
@@ -275,110 +237,14 @@ export default function FaustReportPage() {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Could not download report package."
+        err instanceof Error
+          ? err.message
+          : "Could not download report package.",
       );
     } finally {
       setIsDownloadingZip(false);
     }
   }
-
-  const incidentSummaryFile = useMemo(() => {
-    return `FAUST INCIDENT SUMMARY
-
-Location / jurisdiction:
-${location || "Not provided"}
-
-Incident status:
-${humanizeStatus(editableIncidentStatus)}
-
-Scam status:
-${humanizeStatus(editableScamStatus)}
-
-Suspected scam type:
-${editableScamType || "Not provided"}
-
-Financial loss:
-${editableMoneyLost ? "Yes" : "No or not confirmed"}
-
-Money amount(s):
-${editableMoneyAmounts || "- None identified"}
-
-Payment method(s):
-${editablePaymentMethods || "- None identified"}
-
-Claimed brands / identities:
-${editableClaimedIdentities || "- None identified"}
-
-Incident summary:
-${editableIncidentSummary || "No incident summary available."}
-
-Additional details from user:
-${additionalDetails || "None provided"}
-`;
-  }, [
-    location,
-    editableIncidentStatus,
-    editableScamStatus,
-    editableScamType,
-    editableMoneyLost,
-    editableMoneyAmounts,
-    editablePaymentMethods,
-    editableClaimedIdentities,
-    editableIncidentSummary,
-    additionalDetails,
-  ]);
-
-  const evidenceSummaryFile = useMemo(() => {
-    return `FAUST EVIDENCE SUMMARY
-
-Financial loss:
-${editableMoneyLost ? "Yes" : "No or not confirmed"}
-
-Money amount(s):
-${editableMoneyAmounts || "- None identified"}
-
-Payment method(s):
-${editablePaymentMethods || "- None identified"}
-
-URLs:
-${editableUrls || "- None identified"}
-
-Phone numbers:
-${editablePhones || "- None identified"}
-
-Emails:
-${editableEmails || "- None identified"}
-
-Claimed brands / identities:
-${editableClaimedIdentities || "- None identified"}
-
-Verification notes:
-${editableVerificationNotes || "- None identified"}
-`;
-  }, [
-    editableMoneyLost,
-    editableMoneyAmounts,
-    editablePaymentMethods,
-    editableUrls,
-    editablePhones,
-    editableEmails,
-    editableClaimedIdentities,
-    editableVerificationNotes,
-  ]);
-
-  const transcriptFile = useMemo(() => {
-    return `FAUST CONVERSATION TRANSCRIPT
-
-${editableTranscript || "No conversation transcript available."}
-`;
-  }, [editableTranscript]);
-
-  const recoveryChecklistFile = useMemo(() => {
-    return `FAUST RECOVERY CHECKLIST
-
-${editableRecoveryChecklist || "- No recovery checklist available."}
-`;
-  }, [editableRecoveryChecklist]);
 
   return (
     <main className="min-h-screen bg-[#020617] text-white">
@@ -389,13 +255,6 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
 
         <div className="mx-auto max-w-6xl">
           <div className="mb-8">
-            <Link
-              href="/faust-demo"
-              className="mb-5 inline-flex text-sm font-medium text-[#2EC4B6] hover:text-[#5bd8cd]"
-            >
-              ← Back to FAUST demo
-            </Link>
-
             <div className="mb-4 inline-flex rounded-full border border-[#2EC4B6]/30 bg-[#2EC4B6]/10 px-4 py-2 text-sm font-medium text-[#2EC4B6]">
               FAUST Reporting
             </div>
@@ -413,7 +272,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
 
           {!encryptedStateToken && (
             <div className="rounded-3xl border border-yellow-400/30 bg-yellow-500/10 p-6 text-yellow-100">
-              <p className="font-semibold">No conversation found for reporting.</p>
+              <p className="font-semibold">
+                No conversation found for reporting.
+              </p>
               <p className="mt-2 text-sm leading-6">
                 Return to the FAUST demo, send a few messages, and generate a
                 report after the backend has analyzed the conversation.
@@ -443,7 +304,7 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                 <div className="mt-5 space-y-4">
                   <div>
                     <label className="mb-2 block text-sm font-medium text-slate-300">
-                      Location / jurisdiction
+                      Location / Jurisdiction
                     </label>
                     <input
                       value={location}
@@ -462,7 +323,7 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       onChange={(event) =>
                         setAdditionalDetails(event.target.value)
                       }
-                      placeholder="Add details the conversation may not show, such as transaction hashes, screenshots, platform used, or bank contact status."
+                      placeholder="(Optional) Additional details which might not have been covered by Faust"
                       className="h-32 w-full resize-none rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-white outline-none placeholder:text-slate-500 focus:border-[#2EC4B6]/60"
                     />
                   </div>
@@ -473,7 +334,7 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                     disabled={isGenerating}
                     className="w-full rounded-xl bg-[#2EC4B6] px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[#5bd8cd] disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {isGenerating ? "Generating..." : "Generate report draft"}
+                    {isGenerating ? "Generating..." : "Generate Report"}
                   </button>
 
                   <button
@@ -483,14 +344,26 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                     className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isDownloadingZip
-                      ? "Preparing ZIP..."
-                      : "Download backend ZIP"}
+                      ? "Preparing..."
+                      : "Download Report"}
                   </button>
 
                   <p className="text-xs leading-5 text-slate-500">
                     Generate the draft first. Then review or edit the report
-                    fields before downloading individual TXT files.
+                    fields before downloading the report.
                   </p>
+
+                  <section className="rounded-3xl border border-slate-800 bg-slate-950/70 p-6">
+                    <h2 className="text-2xl font-bold text-white">What to do next</h2>
+
+                    <ul className="mt-5 space-y-3 text-sm text-slate-200">
+                      <li>Stop communicating with the suspected scammer.</li>
+                      <li>Save the downloaded report package and keep the original ZIP unchanged for your records.</li>
+                      <li>If money was sent, contact your bank, payment app, gift card issuer, or platform support as soon as possible.</li>
+                      <li>If you shared passwords, codes, or account details, change your passwords and enable two-factor authentication.</li>
+                      <li>Report the incident to the relevant platform, financial institution, or local authority if needed.</li>
+                    </ul>
+                  </section>
                 </div>
 
                 {error && (
@@ -507,8 +380,8 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       No report draft generated yet.
                     </p>
                     <p className="mt-2 text-sm leading-6 text-slate-400">
-                      Add a location if available, then generate the draft. FAUST
-                      will fill the incident status based on the analyzed
+                      Add a location if available, then generate the draft.
+                      FAUST will fill the incident status based on the analyzed
                       conversation.
                     </p>
                   </div>
@@ -534,7 +407,9 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                       <Field label="Scam status">
                         <select
                           value={editableScamStatus || "unclear"}
-                          onChange={(e) => setEditableScamStatus(e.target.value)}
+                          onChange={(e) =>
+                            setEditableScamStatus(e.target.value)
+                          }
                           className="report-input"
                         >
                           {SCAM_STATUS_OPTIONS.map((option) => (
@@ -643,69 +518,6 @@ ${editableRecoveryChecklist || "- No recovery checklist available."}
                         />
                       </Field>
                     </EditableSection>
-
-                    <EditableSection title="Transcript and recovery">
-                      <Field label="Conversation transcript">
-                        <textarea
-                          value={editableTranscript}
-                          onChange={(e) =>
-                            setEditableTranscript(e.target.value)
-                          }
-                          className="report-textarea h-64"
-                        />
-                      </Field>
-
-                      <Field label="Recovery checklist">
-                        <textarea
-                          value={editableRecoveryChecklist}
-                          onChange={(e) =>
-                            setEditableRecoveryChecklist(e.target.value)
-                          }
-                          className="report-textarea h-40"
-                        />
-                      </Field>
-                    </EditableSection>
-
-                    <EditableSection title="Download edited TXT files">
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        <DownloadButton
-                          label="Download incident summary"
-                          onClick={() =>
-                            downloadTextFile(
-                              "01_incident_summary.txt",
-                              incidentSummaryFile
-                            )
-                          }
-                        />
-                        <DownloadButton
-                          label="Download evidence summary"
-                          onClick={() =>
-                            downloadTextFile(
-                              "02_evidence_summary.txt",
-                              evidenceSummaryFile
-                            )
-                          }
-                        />
-                        <DownloadButton
-                          label="Download transcript"
-                          onClick={() =>
-                            downloadTextFile(
-                              "03_conversation_transcript.txt",
-                              transcriptFile
-                            )
-                          }
-                        />
-                        <DownloadButton
-                          label="Download recovery checklist"
-                          onClick={() =>
-                            downloadTextFile(
-                              "04_recovery_checklist.txt",
-                              recoveryChecklistFile
-                            )
-                          }
-                        />
-                      </div>
-                    </EditableSection>
                   </div>
                 )}
               </section>
@@ -787,23 +599,5 @@ function Field({
       </span>
       {children}
     </label>
-  );
-}
-
-function DownloadButton({
-  label,
-  onClick,
-}: {
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="rounded-xl bg-[#2EC4B6] px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[#5bd8cd]"
-    >
-      {label}
-    </button>
   );
 }
