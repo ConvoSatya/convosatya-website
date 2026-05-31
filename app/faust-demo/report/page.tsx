@@ -47,6 +47,13 @@ function listToLines(value?: string[]): string {
   return Array.isArray(value) ? value.join("\n") : "";
 }
 
+function linesToList(value: string): string[] {
+  return value
+    .split("\n")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function humanizeStatus(value?: string) {
   if (!value) return "Not provided";
 
@@ -211,6 +218,30 @@ export default function FaustReportPage() {
           user_location: location,
           incident_status: editableIncidentStatus,
           additional_details: additionalDetails,
+          edited_report: {
+            ...(report || {}),
+            user_location: location,
+            incident_status: editableIncidentStatus,
+            scam_status: editableScamStatus,
+            scam_type: editableScamType,
+            incident_summary: editableIncidentSummary,
+            money_lost: editableMoneyLost,
+            money_lost_amounts: linesToList(editableMoneyAmounts),
+            payment_methods: linesToList(editablePaymentMethods),
+            extracted_evidence: {
+              ...(report?.extracted_evidence || {}),
+              urls: linesToList(editableUrls),
+              phone_numbers: linesToList(editablePhones),
+              emails: linesToList(editableEmails),
+              claimed_brands: linesToList(editableClaimedIdentities),
+              verification_notes: linesToList(editableVerificationNotes),
+              money_lost: editableMoneyLost,
+              money_lost_amounts: linesToList(editableMoneyAmounts),
+              payment_methods: linesToList(editablePaymentMethods),
+            },
+            recovery_checklist: linesToList(editableRecoveryChecklist),
+            conversation_transcript: editableTranscript,
+          },
         }),
       });
 

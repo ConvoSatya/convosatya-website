@@ -53,6 +53,12 @@ type AnalysisJob = {
   filename?: string;
   image_base64?: string;
   frames_base64?: string[];
+
+  drive_media_file_id?: string | null;
+  drive_media_file_name?: string | null;
+  drive_media_folder_id?: string | null;
+  original_filename?: string | null;
+  media_mime_type?: string | null;
 };
 
 type Usage = {
@@ -862,6 +868,13 @@ export default function FaustDemoChat({
             media_kind: nextJob.media_kind,
             filename: nextJob.filename || "uploaded_media",
             language: "English",
+
+            message_id: nextJob.id,
+            drive_media_file_id: nextJob.drive_media_file_id || null,
+            drive_media_file_name: nextJob.drive_media_file_name || null,
+            drive_media_folder_id: nextJob.drive_media_folder_id || null,
+            original_filename: nextJob.original_filename || null,
+            media_mime_type: nextJob.media_mime_type || null,
           };
 
           if (nextJob.media_kind === "image") {
@@ -1321,6 +1334,13 @@ export default function FaustDemoChat({
           attachment.media_kind === "image" ? mediaBase64 : undefined,
         frames_base64:
           attachment.media_kind === "video" ? framesBase64 || [] : undefined,
+
+        drive_media_file_id: savedMedia?.drive_file_id || null,
+        drive_media_file_name: savedMedia?.drive_file_name || null,
+        drive_media_folder_id: savedMedia?.drive_folder_id || null,
+        original_filename:
+          savedMedia?.original_filename || attachment.original_filename || null,
+        media_mime_type: savedMedia?.mime_type || attachment.mime_type || null,
       };
 
       const nextStateForSnapshot = await new Promise<StoredDemoState>(
