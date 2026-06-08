@@ -251,6 +251,14 @@ export default function BusinessAnalystInternPage() {
                                                     <label style={{ fontSize: "13px", color: "#555555", display: "block", marginBottom: "6px" }}>Portfolio / Website</label>
                                                     <input type="text" name="portfolio" placeholder="yourportfolio.com" style={{ width: "100%", padding: "10px 14px", border: "1px solid #dddddd", borderRadius: "8px", fontSize: "14px", fontFamily: "Space Grotesk, sans-serif", boxSizing: "border-box" }} />
                                                 </div>
+                                                <div>
+                                                    <label style={{ fontSize: "13px", color: "#555555", display: "block", marginBottom: "6px" }}>Instagram <span style={{ color: "#aaaaaa" }}>(optional)</span></label>
+                                                    <input type="text" name="instagram" placeholder="instagram.com/yourhandle" style={{ width: "100%", padding: "10px 14px", border: "1px solid #dddddd", borderRadius: "8px", fontSize: "14px", fontFamily: "Space Grotesk, sans-serif", boxSizing: "border-box" }} />
+                                                </div>
+                                                <div>
+                                                    <label style={{ fontSize: "13px", color: "#555555", display: "block", marginBottom: "6px" }}>YouTube <span style={{ color: "#aaaaaa" }}>(optional)</span></label>
+                                                    <input type="text" name="youtube" placeholder="youtube.com/@yourchannel" style={{ width: "100%", padding: "10px 14px", border: "1px solid #dddddd", borderRadius: "8px", fontSize: "14px", fontFamily: "Space Grotesk, sans-serif", boxSizing: "border-box" }} />
+                                                </div>
                                             </div>
                                         </div>
 
