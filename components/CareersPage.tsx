@@ -16,7 +16,7 @@ export default function CareersPage() {
                 </h1>
 
                 <p style={{ fontSize: "15px", lineHeight: "1.8", color: "#444444", maxWidth: "580px", marginBottom: "20px", fontFamily: "Space Grotesk, sans-serif" }}>
-                    ConvoSatya is building FAUST — a real-time AI pipeline that detects scams across full conversation threads, not just single messages. We analyze text, images, and video. We&apos;re pre-seed, backed by peer-reviewed research publishing June 2026, and a small team that moves fast and works directly with founders.
+                    ConvoSatya is building FAUST. A real-time AI pipeline that detects scams across full conversation threads, not just single messages. We analyze text, images, and video. We&apos;re pre-seed, backed by peer-reviewed research publishing June 2026, and a small team that moves fast and works directly with founders.
                 </p>
 
                 <div className="flex gap-6 mb-14">
