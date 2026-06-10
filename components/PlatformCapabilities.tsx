@@ -1,11 +1,11 @@
 import React from "react";
-import { 
-  MessageSquare, 
-  Smartphone, 
-  ShieldAlert, 
-  Mail, 
-  Mic, 
-  FileWarning 
+import {
+  MessageSquare,
+  Smartphone,
+  ShieldAlert,
+  Mail,
+  Mic,
+  FileWarning
 } from "lucide-react";
 
 export default function PlatformCapabilities() {
@@ -26,6 +26,11 @@ export default function PlatformCapabilities() {
       icon: <ShieldAlert size={24} className="text-blue-400" />,
     },
     {
+      title: "Scam Reporting & Recovery",
+      description: "Report scams, preserve evidence, and get guidance on next steps after an incident.",
+      icon: <FileWarning size={24} className="text-blue-400" />,
+    },
+    {
       title: "Email Scam Detection",
       description: "Extend protection to email phishing, malicious attachments, and impersonation attacks.",
       icon: <Mail size={24} className="text-blue-400" />,
@@ -36,12 +41,6 @@ export default function PlatformCapabilities() {
       description: "Detect social engineering and voice-based scams in real-time conversations and calls.",
       icon: <Mic size={24} className="text-blue-400" />,
       badge: "In progress",
-    },
-    {
-      title: "Scam Reporting & Recovery",
-      description: "Report scams, preserve evidence, and get guidance on next steps after an incident.",
-      icon: <FileWarning size={24} className="text-blue-400" />,
-      badge: "Coming soon",
     },
   ];
 
@@ -67,8 +66,8 @@ export default function PlatformCapabilities() {
         {/* Unified Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {features.map((feature, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className="relative group p-4 sm:p-5 md:p-6 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md transition-all duration-300 hover:border-transparent hover:bg-gradient-to-b hover:from-white/[0.05] hover:to-white/[0.02] hover:shadow-[0_0_40px_rgba(59,130,246,0.25)] opacity-0 translate-y-6 animate-[fadeUp_0.6s_ease_forwards]"
               style={{ animationDelay: `${idx * 0.08}s` }}
             >
@@ -79,26 +78,26 @@ export default function PlatformCapabilities() {
                 {/* Top row */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-teal-400/10 shadow-[0_0_20px_rgba(59,130,246,0.25)] group-hover:shadow-[0_0_40px_rgba(59,130,246,0.5)] transition-all duration-300 group-hover:scale-110">
-                  {feature.icon}
+                    {feature.icon}
+                  </div>
+
+                  {/* Optional badge */}
+                  {feature.badge && (
+                    <span className="text-xs px-3 py-1 rounded-full bg-white/10 text-white/70 border border-white/10 backdrop-blur-sm">
+                      {feature.badge}
+                    </span>
+                  )}
                 </div>
 
-                {/* Optional badge */}
-                {feature.badge && (
-                  <span className="text-xs px-3 py-1 rounded-full bg-white/10 text-white/70 border border-white/10 backdrop-blur-sm">
-                    {feature.badge}
-                  </span>
-                )}
-              </div>
+                {/* Title */}
+                <h3 className="text-white text-lg font-semibold tracking-tight mb-2">
+                  {feature.title}
+                </h3>
 
-              {/* Title */}
-              <h3 className="text-white text-lg font-semibold tracking-tight mb-2">
-                {feature.title}
-              </h3>
-
-              {/* Description */}
-              <p className="text-white/60 text-sm leading-relaxed">
-                {feature.description}
-              </p>
+                {/* Description */}
+                <p className="text-white/60 text-sm leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
             </div>
           ))}
