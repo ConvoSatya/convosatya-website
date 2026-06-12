@@ -16,7 +16,7 @@ const institutions = [
 
 export default function WhoItsFor() {
   return (
-    <section className="relative overflow-hidden bg-black px-6 pt-10 pb-20 md:pt-12 md:pb-28">
+    <section className="relative overflow-hidden bg-black px-6 pt-10 pb-14 md:pt-12 md:pb-16">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
         <div className="mb-12 text-center md:mb-14">

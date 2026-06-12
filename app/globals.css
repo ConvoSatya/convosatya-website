@@ -33,16 +33,6 @@ body {
   overflow-x: hidden;
 }
 
-@keyframes floatGlow {
-  0% { transform: translateY(0px) translateX(-50%); opacity: 0.8; }
-  50% { transform: translateY(-20px) translateX(-50%); opacity: 1; }
-  100% { transform: translateY(0px) translateX(-50%); opacity: 0.8; }
-}
-
-.animate-float-glow {
-  animation: floatGlow 8s ease-in-out infinite;
-}
-
 @keyframes fadeUp {
   0% {
     opacity: 0;
@@ -71,10 +61,10 @@ body {
   transform: none;
 }
 .reveal-left {
-  transform: translateX(-32px);
+  transform: translateX(-18px);
 }
 .reveal-right {
-  transform: translateX(32px);
+  transform: translateX(18px);
 }
 .reveal.is-visible {
   opacity: 1;
@@ -93,31 +83,12 @@ body {
   50% { transform: scale(1.05); opacity: 1; }
 }
 
-/* FAUST hub motion: breathing pulse, radar sweep, orbiting signals */
-@keyframes hubRotate {
-  to { transform: rotate(360deg); }
-}
+/* FAUST hub: breathing pulse ring */
 .hub-pulse {
   animation: pulseRing 5s ease-in-out infinite;
 }
-.hub-sweep {
-  border-radius: 9999px;
-  background: conic-gradient(from 0deg, transparent 0deg, rgba(45, 212, 191, 0.16) 35deg, transparent 70deg);
-  -webkit-mask-image: radial-gradient(circle, transparent 55%, black 62%, black 78%, transparent 85%);
-  mask-image: radial-gradient(circle, transparent 55%, black 62%, black 78%, transparent 85%);
-  animation: hubRotate 12s linear infinite;
-}
-.hub-orbit {
-  animation: hubRotate 18s linear infinite;
-}
-.hub-orbit-reverse {
-  animation: hubRotate 26s linear infinite reverse;
-}
 @media (prefers-reduced-motion: reduce) {
-  .hub-pulse,
-  .hub-sweep,
-  .hub-orbit,
-  .hub-orbit-reverse {
+  .hub-pulse {
     animation: none;
   }
 }
@@ -232,23 +203,6 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .connector-dash {
-    animation: none;
-    opacity: 0;
-  }
-}
-
-/* Light pulse traveling along a connector line toward the hub */
-@keyframes connectorFlow {
-  0% { transform: translateY(-50%) translateX(0); opacity: 0; }
-  12% { opacity: 1; }
-  88% { opacity: 1; }
-  100% { transform: translateY(-50%) translateX(118px); opacity: 0; }
-}
-.connector-flow {
-  animation: connectorFlow 2.6s ease-in-out infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .connector-flow {
     animation: none;
     opacity: 0;
   }
