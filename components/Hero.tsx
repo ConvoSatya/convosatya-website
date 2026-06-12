@@ -57,7 +57,7 @@ export default function Hero() {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        padding: "80px 16px",
+        padding: "80px 16px 24px",
         overflow: "hidden",
       }}
     >
@@ -68,7 +68,7 @@ export default function Hero() {
         <div className="flex flex-col text-center lg:text-left items-center lg:items-start z-10 lg:-translate-y-6">
 
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/25 rounded-md px-3 py-1.5 text-[12px] text-teal-400 font-medium mb-8 tracking-wide">
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-white/60 mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-teal-400 inline-block" />
             Conversational AI Security
           </div>
@@ -100,7 +100,7 @@ export default function Hero() {
         </div>
 
         {/* Right Column: Phone */}
-        <div className="relative w-full max-w-[420px] mx-auto lg:mx-0 lg:ml-auto z-10 mt-12 lg:mt-0 group cursor-default lg:scale-[0.92] lg:origin-center lg:-translate-y-12">
+        <div className="relative w-full max-w-[420px] mx-auto lg:mx-0 lg:ml-auto z-10 mt-12 lg:mt-0 group cursor-default lg:scale-[0.92] lg:origin-center lg:-translate-y-12 lg:-mb-12">
           {/* Soft backlight separating the device from the black page.
               closest-side sizing means the gradient is fully transparent
               before the box edges — no visible square boundary. */}

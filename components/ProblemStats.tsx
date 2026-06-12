@@ -1,38 +1,53 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import Reveal from "./Reveal";
 
-import { Users, Banknote, BarChart3 } from "lucide-react";
-
-interface StatProps {
+interface Stat {
   target: number;
   prefix?: string;
   suffix?: string;
   decimals?: number;
   label: string;
   context: string;
-  icon: React.ReactNode;
 }
 
-const StatCard = ({ target, prefix = "", suffix = "", decimals = 0, label, context, icon }: StatProps) => {
+const stats: Stat[] = [
+  {
+    target: 20.9,
+    prefix: "$",
+    suffix: "B",
+    decimals: 1,
+    label: "Lost to cybercrime in a single year",
+    context: "Reported losses, an all-time high",
+  },
+  {
+    target: 1008597,
+    label: "Complaints filed to the FBI in 2025",
+    context: "Nearly 3,000 victims every day",
+  },
+  {
+    target: 78,
+    suffix: "%",
+    label: "Of crypto scam victims didn't know they were being scammed",
+    context: "Until the FBI told them",
+  },
+];
+
+/** Counts up when the row scrolls into view (same easing as before). */
+function CountUp({ target, prefix = "", suffix = "", decimals = 0 }: Omit<Stat, "label" | "context">) {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+        if (entry.isIntersecting) setIsVisible(true);
       },
       { threshold: 0.1 }
     );
-
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
-
+    if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
 
@@ -46,111 +61,140 @@ const StatCard = ({ target, prefix = "", suffix = "", decimals = 0, label, conte
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
       const easeProgress = 1 - Math.pow(1 - progress, 3);
-      
       setCount(easeProgress * target);
-
-      if (progress < 1) {
-        window.requestAnimationFrame(step);
-      }
+      if (progress < 1) window.requestAnimationFrame(step);
     };
 
     window.requestAnimationFrame(step);
   }, [isVisible, target]);
 
-  const formattedCount = count.toLocaleString(undefined, {
+  const formatted = count.toLocaleString(undefined, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   });
 
   return (
-    <div 
-      ref={cardRef}
-      className="relative flex-1 min-w-[240px] sm:min-w-[280px] md:min-w-[300px] p-5 sm:p-6 md:p-8 rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-white/[0.01] backdrop-blur-md transition-all duration-300 hover:border-blue-500/30 hover:shadow-[0_0_40px_rgba(59,130,246,0.15)] group"
-    >
-      <div className="relative z-10">
-        <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-teal-400/10 mb-6 group-hover:scale-110 transition-transform duration-300">
-          <div className="text-blue-400">
-            {icon}
-          </div>
-        </div>
-
-        <div className="text-[28px] sm:text-[36px] md:text-[44px] font-bold text-white tracking-tight mb-2">
-         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-400">
-            {prefix}{formattedCount}{suffix}
-          </span>
-        </div>
-        
-        <div className="text-[16px] font-semibold text-white/90 leading-tight mb-4">
-          {label}
-        </div>
-        
-        <div className="text-[12px] text-white/40 font-medium tracking-wide uppercase">
-          {context}
-        </div>
-      </div>
-    </div>
+    <span ref={ref}>
+      {prefix}
+      {formatted}
+      <span className="text-teal-400">{suffix}</span>
+    </span>
   );
-};
+}
 
-export default function ProblemStats() {
-  const stats = [
-    { 
-      target: 193000, 
-      suffix: "+", 
-      label: "Phishing complaints filed to FBI in 2024",
-      context: "One victim every 3 mins",
-      icon: <Users size={24} />
-    },
-    { 
-      target: 12.5, 
-      prefix: "$", 
-      suffix: "B+", 
-      decimals: 1, 
-      label: "Lost to fraud in a single year",
-      context: "AVERAGE LOSS OF $19,372 PER VICTIM",
-      icon: <Banknote size={24} />
-    },
-    { 
-      target: 1, 
-      prefix: "#", 
-      label: "Most reported cybercrime category",
-      context: "Dominating all other threats",
-      icon: <BarChart3 size={24} />
-    },
-  ];
-
+function StatRow({ stat, side }: { stat: Stat; side: "left" | "right" }) {
   return (
-    <section className="relative py-12 sm:py-16 md:py-24 px-6 bg-black overflow-hidden">
-      {/* Subtle background glow to match vibe */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/5 blur-[120px] pointer-events-none" />
+    <div className="relative pl-12 lg:pl-0">
+      {/* Node on the spine */}
+      <span
+        className="absolute left-4 lg:left-1/2 top-4 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-teal-400 ring-4 ring-teal-400/15"
+        aria-hidden="true"
+      />
 
-      <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <p className="text-[13px] font-semibold tracking-[2px] text-blue-400 uppercase mb-4">
-            WHY IT MATTERS
-          </p>
-          <h2 className="text-[26px] sm:text-[32px] md:text-[40px] font-bold text-white tracking-tight mb-4 drop-shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-            The scale of the problem
-          </h2>
-          <p className="text-[14px] sm:text-[16px] text-white/60 max-w-2xl mx-auto">
-            Scams are not slowing down. Neither are we.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {stats.map((stat, idx) => (
-            <StatCard 
-              key={idx}
+      <div className={`lg:w-1/2 ${side === "right" ? "lg:ml-auto lg:pl-16" : "lg:pr-16 lg:text-right"}`}>
+        <Reveal from={side}>
+          <div className="text-[44px] sm:text-[56px] md:text-[64px] font-bold leading-none tracking-tight text-white">
+            <CountUp
               target={stat.target}
               prefix={stat.prefix}
               suffix={stat.suffix}
               decimals={stat.decimals}
-              label={stat.label}
-              context={stat.context}
-              icon={stat.icon}
             />
-          ))}
+          </div>
+          <p className="mt-3 text-[16px] font-medium text-white/90">{stat.label}</p>
+          <p className="mt-2 text-[11px] uppercase tracking-[0.14em] text-white/40">{stat.context}</p>
+        </Reveal>
+      </div>
+    </div>
+  );
+}
+
+export default function ProblemStats() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const spineRef = useRef<HTMLDivElement>(null);
+
+  // The spine draws itself as the section moves through the viewport.
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      if (spineRef.current) spineRef.current.style.transform = "translateX(-50%) scaleY(1)";
+      return;
+    }
+
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const section = sectionRef.current;
+      const fill = spineRef.current;
+      if (!section || !fill) return;
+      const rect = section.getBoundingClientRect();
+      const progress = Math.min(
+        Math.max((window.innerHeight * 0.85 - rect.top) / rect.height, 0),
+        1
+      );
+      fill.style.transform = `translateX(-50%) scaleY(${progress.toFixed(3)})`;
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="relative overflow-hidden bg-black px-6 pt-10 pb-20 md:pt-12 md:pb-28">
+      <div className="relative z-10 mx-auto max-w-5xl">
+        {/* Header — staggered cascade instead of one block */}
+        <div className="mb-14 text-center">
+          <Reveal>
+            <p className="mb-4 text-[11px] font-medium uppercase tracking-[0.14em] text-teal-400">
+              The problem
+            </p>
+          </Reveal>
+          <Reveal delay={120}>
+            <h2 className="mb-4 text-[26px] font-bold tracking-tight text-white sm:text-[32px] md:text-[40px]">
+              Scams don&apos;t look like scams anymore
+            </h2>
+          </Reveal>
+          <Reveal delay={240}>
+            <p className="mx-auto max-w-2xl text-[14px] text-white/60 sm:text-[16px]">
+              They build trust. They have conversations. They sound real — and the numbers show how well it works.
+            </p>
+          </Reveal>
         </div>
+
+        {/* Spine + stats */}
+        <div className="relative">
+          <div
+            className="absolute left-4 lg:left-1/2 top-0 bottom-0 w-px -translate-x-1/2 bg-white/[0.06]"
+            aria-hidden="true"
+          />
+          <div
+            ref={spineRef}
+            className="absolute left-4 lg:left-1/2 top-0 bottom-0 w-px origin-top bg-gradient-to-b from-teal-400/70 via-teal-400/40 to-teal-400/10"
+            style={{ transform: "translateX(-50%) scaleY(0)" }}
+            aria-hidden="true"
+          />
+
+          <div className="flex flex-col gap-10 py-2 md:gap-14">
+            {stats.map((stat, idx) => (
+              <StatRow key={stat.label} stat={stat} side={idx % 2 ? "right" : "left"} />
+            ))}
+          </div>
+        </div>
+
+        {/* Source */}
+        <Reveal delay={150} className="mt-12 text-center">
+          <p className="text-[11px] uppercase tracking-[0.08em] text-white/35">
+            Source: FBI IC3 Internet Crime Report, 2025
+          </p>
+        </Reveal>
       </div>
     </section>
   );

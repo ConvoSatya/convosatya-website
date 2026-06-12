@@ -54,6 +54,34 @@ body {
   }
 }
 
+/* Scroll-reveal primitive — toggled by components/Reveal.tsx */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-up {
+  transform: translateY(24px);
+}
+.reveal-left {
+  transform: translateX(-32px);
+}
+.reveal-right {
+  transform: translateX(32px);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none;
+  }
+}
+
 @keyframes alertIn {
   0% {
     opacity: 0;
