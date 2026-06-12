@@ -31,7 +31,7 @@ function GitHubIcon({ size = 18 }: { size?: number }) {
   );
 }
 
-function TwitterIcon({ size = 18 }: { size?: number }) {
+function XIcon({ size = 18 }: { size?: number }) {
   return (
     <svg
       width={size}
@@ -45,6 +45,12 @@ function TwitterIcon({ size = 18 }: { size?: number }) {
   );
 }
 
+const navLinkClasses =
+  "text-[14px] text-white/75 hover:text-white no-underline transition-colors";
+
+const socialLinkClasses =
+  "flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-all duration-300 hover:border-teal-400/50 hover:bg-teal-400/10 hover:text-teal-300";
+
 export default function Footer() {
   const scrollToTop = (e: React.MouseEvent) => {
     // If we're already on the home page, just scroll up
@@ -57,23 +63,11 @@ export default function Footer() {
   return (
     <footer
       id="contact"
-      style={{
-        backgroundColor: "#02050A",
-        color: "#E5E7EB",
-        padding: "64px 24px 32px",
-      }}
+      className="border-t border-white/[0.06] bg-[#02050A] px-6 pb-8 pt-14"
     >
       {/* Top: 3 columns */}
-      <div
-        style={{
-          maxWidth: "960px",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "48px",
-        }}
-      >
-        {/* Left: Logo + tagline */}
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr]">
+        {/* Brand */}
         <div>
           <Link
             href="/"
@@ -88,16 +82,14 @@ export default function Footer() {
               className="group-hover:scale-105 transition-transform"
             />
             <span className="text-[18px] tracking-tight">
-              <span className="font-semibold text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]">
-                Convo
-              </span>
-              <span className="font-bold bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(34,197,94,0.25)]">
+              <span className="font-semibold text-white">Convo</span>
+              <span className="font-bold bg-gradient-to-r from-green-500 to-teal-400 bg-clip-text text-transparent">
                 Satya
               </span>
             </span>
           </Link>
 
-          <p className="text-[14px] text-white/75 mt-3 leading-relaxed">
+          <p className="mt-3 max-w-[240px] text-[14px] leading-relaxed text-white/60">
             AI-powered scam detection for conversations
           </p>
 
@@ -107,143 +99,88 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="ConvoSatya LinkedIn"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-all duration-300 hover:border-[#2EC4B6]/50 hover:bg-[#2EC4B6]/10 hover:text-[#2EC4B6]"
+              className={socialLinkClasses}
             >
-              <LinkedInIcon size={18} />
+              <LinkedInIcon />
             </a>
-
             <a
               href="https://github.com/ConvoSatya"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="ConvoSatya GitHub"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-all duration-300 hover:border-[#2EC4B6]/50 hover:bg-[#2EC4B6]/10 hover:text-[#2EC4B6]"
+              className={socialLinkClasses}
             >
-              <GitHubIcon size={18} />
+              <GitHubIcon />
             </a>
-
             <a
               href="https://x.com/convosatya"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="ConvoSatya Twitter"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-all duration-300 hover:border-[#2EC4B6]/50 hover:bg-[#2EC4B6]/10 hover:text-[#2EC4B6]"
+              aria-label="ConvoSatya on X"
+              className={socialLinkClasses}
             >
-              <TwitterIcon size={18} />
+              <XIcon />
             </a>
           </div>
         </div>
 
-        {/* Middle: Navigation */}
+        {/* Navigation */}
         <div>
-          <h4
-            style={{
-              fontSize: "13px",
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "1.5px",
-              color: "rgba(255,255,255,0.4)",
-              marginTop: 0,
-              marginBottom: "16px",
-            }}
-          >
+          <h4 className="mt-0 mb-4 text-[11px] font-medium uppercase tracking-[0.14em] text-white/40">
             Navigation
           </h4>
 
-          <div className="flex flex-col gap-2.5">
-            <Link
-              href="/product"
-              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
-            >
+          <div className="grid max-w-[260px] grid-cols-2 gap-x-6 gap-y-2.5">
+            <Link href="/product" className={navLinkClasses}>
               Product
             </Link>
-
-            <Link
-              href="/faust-demo"
-              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
-            >
-              Demo
-            </Link>
-
-            <Link
-              href="/faq"
-              className="text-[15px] text-white/75 no-underline transition-colors hover:text-white"
-            >
-              FAQ
-            </Link>
-
-            <Link
-              href="/team"
-              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
-            >
+            <Link href="/team" className={navLinkClasses}>
               Team
             </Link>
-
-            <Link
-              href="/careers"
-              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
-            >
+            <Link href="/faust-demo" className={navLinkClasses}>
+              Demo
+            </Link>
+            <Link href="/careers" className={navLinkClasses}>
               Careers
             </Link>
-
-            <Link
-              href="/contact"
-              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
-            >
+            <Link href="/faq" className={navLinkClasses}>
+              FAQ
+            </Link>
+            <Link href="/contact" className={navLinkClasses}>
               Contact
             </Link>
+          </div>
+        </div>
 
+        {/* Get in touch */}
+        <div>
+          <h4 className="mt-0 mb-4 text-[11px] font-medium uppercase tracking-[0.14em] text-white/40">
+            Get in Touch
+          </h4>
+
+          <a
+            href="mailto:support@convosatya.com"
+            className="text-[14px] text-white/75 no-underline transition-colors hover:text-white"
+          >
+            support@convosatya.com
+          </a>
+
+          <div className="mt-3">
             <button
               onClick={() =>
                 window.dispatchEvent(new CustomEvent("open-access-modal"))
               }
-              className="text-[14px] text-left text-white/75 hover:text-white transition-colors cursor-pointer"
+              className="cursor-pointer text-left text-[14px] text-teal-400 transition-colors hover:text-teal-300"
             >
-              Request Early Platform Access
+              Request Early Access →
             </button>
           </div>
-        </div>
-
-        {/* Right: Contact */}
-        <div>
-          <h4
-            style={{
-              fontSize: "13px",
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "1.5px",
-              color: "rgba(255,255,255,0.4)",
-              marginTop: 0,
-              marginBottom: "16px",
-            }}
-          >
-            Get in Touch
-          </h4>
-
-          <p className="text-[14px] text-white/75 m-0 hover:text-white transition-colors cursor-pointer">
-            support@convosatya.com
-          </p>
-
-          <p className="text-[13px] text-white/75 mt-3">
-            Backed by Academic Research
-          </p>
-
-          <p className="mt-2 max-w-[280px] text-[13px] leading-6 text-white/55">
-            Built to detect scams before they become damage.
-          </p>
         </div>
       </div>
 
       {/* Bottom: Copyright */}
-      <div
-        style={{
-          borderTop: "1px solid rgba(255,255,255,0.08)",
-          marginTop: "48px",
-          paddingTop: "24px",
-          textAlign: "center",
-        }}
-      >
-        <p className="text-[13px] text-white/50 m-0">
+      <div className="mt-12 border-t border-white/[0.08] pt-6 text-center">
+        <p className="m-0 text-[13px] text-white/50">
           © 2026 ConvoSatya. All rights reserved.
         </p>
       </div>

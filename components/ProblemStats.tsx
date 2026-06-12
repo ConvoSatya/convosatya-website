@@ -54,14 +54,30 @@ function CountUp({ target, prefix = "", suffix = "", decimals = 0 }: Omit<Stat, 
   useEffect(() => {
     if (!isVisible) return;
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setCount(target);
+      return;
+    }
+
     let startTimestamp: number | null = null;
-    const duration = 2000;
+    let lastUpdate = 0;
+    const duration = 3600;
 
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
-      setCount(easeProgress * target);
+      // Ease-in-out: starts gently and settles gently, instead of
+      // sprinting off the line like a pure ease-out.
+      const eased =
+        progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      // Repaint the digits ~18×/sec instead of every frame — the value
+      // climbs just as smoothly but the digit churn stops flickering.
+      if (timestamp - lastUpdate > 55 || progress === 1) {
+        lastUpdate = timestamp;
+        setCount(eased * target);
+      }
       if (progress < 1) window.requestAnimationFrame(step);
     };
 
@@ -121,23 +137,42 @@ export default function ProblemStats() {
     }
 
     let raf = 0;
-    const update = () => {
-      raf = 0;
+    let current = 0;
+
+    const computeTarget = () => {
       const section = sectionRef.current;
-      const fill = spineRef.current;
-      if (!section || !fill) return;
+      if (!section) return 0;
       const rect = section.getBoundingClientRect();
-      const progress = Math.min(
+      return Math.min(
         Math.max((window.innerHeight * 0.85 - rect.top) / rect.height, 0),
         1
       );
-      fill.style.transform = `translateX(-50%) scaleY(${progress.toFixed(3)})`;
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
     };
 
-    update();
+    // Deliberate draw: the spine eases toward the scroll position under a
+    // strict speed limit. Scroll decides where the line is heading — never
+    // how fast it gets there — so hard flicks can't make it sprint and the
+    // line reveals progress at its own analytical pace.
+    const EASE = 0.02; // gentle settle as it approaches the target
+    const MAX_STEP = 0.0035; // pace cap: ~21% of the line per second
+    const tick = () => {
+      const fill = spineRef.current;
+      const target = computeTarget();
+      const step = (target - current) * EASE;
+      current += Math.max(Math.min(step, MAX_STEP), -MAX_STEP);
+      if (Math.abs(target - current) < 0.0005) {
+        current = target;
+        raf = 0;
+      } else {
+        raf = requestAnimationFrame(tick);
+      }
+      if (fill) fill.style.transform = `translateX(-50%) scaleY(${current.toFixed(4)})`;
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
