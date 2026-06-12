@@ -64,9 +64,6 @@ export default function Hero() {
         overflow: "hidden",
       }}
     >
-      {/* Floating glow */}
-      <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] bg-blue-500/20 blur-[60px] md:blur-[120px] animate-float-glow pointer-events-none z-0" />
-
       {/* Container */}
       <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-8 items-center relative z-10">
 
@@ -107,15 +104,6 @@ export default function Hero() {
 
         {/* Right Column: Phone */}
         <div className="relative w-full max-w-[340px] mx-auto lg:mx-0 lg:ml-auto z-10 mt-12 lg:mt-0 group cursor-default lg:scale-[0.92] lg:origin-center lg:-translate-y-6">
-          <div
-            style={{
-              position: "absolute", top: "50%", left: "50%",
-              transform: "translate(-50%, -50%)", width: "140%", height: "140%",
-              background: "radial-gradient(circle at center, rgba(59,130,246,0.15), transparent 60%)",
-              pointerEvents: "none", zIndex: 0,
-            }}
-          />
-
           {/* Phone Frame */}
           <div className="relative z-10 h-[680px] w-full rounded-[52px] border-[10px] border-[#111622] bg-[#050810] shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_0_15px_rgba(255,255,255,0.05),0_0_0_1px_rgba(255,255,255,0.15)] overflow-hidden flex flex-col">
 
