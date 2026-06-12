@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { AlertTriangle } from "lucide-react";
 import AuthAwareRequestAccess from "@/components/AuthAwareRequestAccess";
 
@@ -49,7 +50,7 @@ export default function Hero() {
 
   return (
     <section
-      className="pt-20 sm:pt-24 md:pt-28 lg:pt-32"
+      className="pt-16 sm:pt-12 lg:pt-8"
       style={{
         position: "relative",
         display: "flex",
@@ -57,10 +58,6 @@ export default function Hero() {
         justifyContent: "center",
         minHeight: "100vh",
         padding: "80px 16px",
-        background: `
-          radial-gradient(600px at 70% 30%, rgba(0, 120, 255, 0.25), transparent),
-          radial-gradient(400px at 30% 70%, rgba(0, 200, 150, 0.15), transparent),
-          linear-gradient(to bottom, transparent, rgba(0,0,0,0.8), #000000)`,
         overflow: "hidden",
       }}
     >
@@ -68,7 +65,7 @@ export default function Hero() {
       <div className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-8 items-center relative z-10">
 
         {/* Left Column */}
-        <div className="flex flex-col text-center lg:text-left items-center lg:items-start z-10">
+        <div className="flex flex-col text-center lg:text-left items-center lg:items-start z-10 lg:-translate-y-6">
 
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/25 rounded-md px-3 py-1.5 text-[12px] text-teal-400 font-medium mb-8 tracking-wide">
@@ -77,7 +74,7 @@ export default function Hero() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-[32px] sm:text-[42px] md:text-[52px] lg:text-[64px] text-white font-bold leading-[1.1] tracking-[-0.02em] max-w-[600px] relative drop-shadow-[0_0_20px_rgba(255,255,255,0.08)]">
+          <h1 className="text-[32px] sm:text-[42px] md:text-[52px] lg:text-[64px] text-white font-bold leading-[1.1] tracking-[-0.02em] max-w-[600px] relative">
             <span className="text-white">Detect scams<br />before they<br /></span>
             <span className="text-teal-400">cost you</span>
           </h1>
@@ -97,15 +94,62 @@ export default function Hero() {
 
           {/* Trust line */}
           <p className="text-[14px] text-white/50 mt-10 tracking-[0.2px] relative">
-            Powered by FAUST · Backed by peer-reviewed research ·{" "}
-            <span className="text-teal-400">Publishing June 2026</span>
+            Powered by FAUST · Research-backed ·{" "}
+            <span className="text-teal-400">Privacy-first</span>
           </p>
         </div>
 
         {/* Right Column: Phone */}
-        <div className="relative w-full max-w-[340px] mx-auto lg:mx-0 lg:ml-auto z-10 mt-12 lg:mt-0 group cursor-default lg:scale-[0.92] lg:origin-center lg:-translate-y-6">
-          {/* Phone Frame */}
-          <div className="relative z-10 h-[680px] w-full rounded-[52px] border-[10px] border-[#111622] bg-[#050810] shadow-[0_30px_60px_rgba(0,0,0,0.8),inset_0_0_15px_rgba(255,255,255,0.05),0_0_0_1px_rgba(255,255,255,0.15)] overflow-hidden flex flex-col">
+        <div className="relative w-full max-w-[420px] mx-auto lg:mx-0 lg:ml-auto z-10 mt-12 lg:mt-0 group cursor-default lg:scale-[0.92] lg:origin-center lg:-translate-y-12">
+          {/* Soft backlight separating the device from the black page.
+              closest-side sizing means the gradient is fully transparent
+              before the box edges — no visible square boundary. */}
+          <div
+            className="absolute -inset-[12%] pointer-events-none"
+            aria-hidden="true"
+            style={{
+              background:
+                "radial-gradient(ellipse closest-side at center, rgba(255,255,255,0.07), rgba(255,255,255,0.025) 55%, transparent 75%)",
+            }}
+          />
+
+          {/* Device mockup: photo frame (public/phone-screen.png) with the live
+              demo positioned inside the screen cutout. Inset percentages are
+              measured from the image — if the asset changes, re-measure. */}
+          <div className="relative w-full aspect-[374/666]">
+            <Image
+              src="/phone-screen.png"
+              alt=""
+              fill
+              priority
+              aria-hidden="true"
+              sizes="420px"
+              className="pointer-events-none select-none object-contain z-10"
+            />
+
+            {/* Screen */}
+            <div
+              className="absolute z-20 flex flex-col overflow-hidden rounded-[36px] bg-[#050810]"
+              style={{ left: "16.3%", right: "16.3%", top: "8.3%", bottom: "8.6%" }}
+            >
+
+            {/* Status Bar */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-50 flex items-center justify-between px-7 pt-3">
+              <span className="font-mono text-[11px] font-semibold tracking-wide text-white/80">9:41</span>
+              <div className="flex items-center gap-1.5 text-white/75">
+                <svg width="15" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true">
+                  <rect x="0" y="7" width="3" height="4" rx="0.5" />
+                  <rect x="4.5" y="4.5" width="3" height="6.5" rx="0.5" />
+                  <rect x="9" y="2" width="3" height="9" rx="0.5" />
+                  <rect x="13.5" y="0" width="3" height="11" rx="0.5" opacity="0.35" />
+                </svg>
+                <svg width="22" height="11" viewBox="0 0 25 12" fill="none" aria-hidden="true">
+                  <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="currentColor" opacity="0.4" />
+                  <rect x="2" y="2" width="14" height="8" rx="1.5" fill="currentColor" />
+                  <path d="M23.5 4v4c1-.4 1.5-1.2 1.5-2s-.5-1.6-1.5-2z" fill="currentColor" opacity="0.4" />
+                </svg>
+              </div>
+            </div>
 
             {/* Dynamic Island */}
             <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-7 bg-[#111622] rounded-full z-50 flex items-center justify-start px-2 shadow-[inset_0_2px_4px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.02)]">
@@ -129,10 +173,13 @@ export default function Hero() {
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
                 </button>
               )}
+
+              {/* Fade for messages scrolling under the header */}
+              <div className="absolute inset-x-0 top-full h-6 bg-gradient-to-b from-[#050810] to-transparent pointer-events-none" aria-hidden="true" />
             </div>
 
             {/* Chat Area */}
-            <div ref={chatContainerRef} className="relative z-20 flex-1 overflow-y-auto px-4 pb-[110px] pt-6 scroll-smooth pointer-events-auto [&::-webkit-scrollbar]:w-[4px] [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/10 hover:[&::-webkit-scrollbar-thumb]:bg-white/25 [&::-webkit-scrollbar-thumb]:rounded-full">
+            <div ref={chatContainerRef} className={`relative z-20 flex-1 overflow-y-auto px-4 pt-6 scroll-smooth pointer-events-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${step === 14 ? "pb-[240px]" : "pb-[110px]"}`}>
               <div className="flex flex-col gap-1.5">
 
                 {step >= 1 && (
@@ -237,14 +284,14 @@ export default function Hero() {
 
             {/* Detection Alert */}
             {step === 14 && (
-              <div className="absolute bottom-[88px] left-3 right-3 z-30 animate-[fadeUp_0.4s_ease-out_forwards]">
-                <div className="rounded-2xl bg-[#0A0F1A]/95 backdrop-blur-xl border border-red-500/30 p-4 shadow-[0_15px_40px_rgba(0,0,0,0.6),0_0_30px_rgba(239,68,68,0.15)] ring-1 ring-white/5">
+              <div className="absolute bottom-[88px] left-3 right-3 z-30 animate-[alertIn_0.3s_ease-out_forwards]">
+                <div className="rounded-2xl bg-[#0A0F1A] border border-red-500/30 p-4 shadow-[0_15px_40px_rgba(0,0,0,0.6),0_0_30px_rgba(239,68,68,0.15)] ring-1 ring-white/5">
                   <div className="flex items-start gap-3">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-500/20 ring-1 ring-red-500/30">
                       <AlertTriangle size={18} className="text-red-400" />
                     </div>
                     <div>
-                      <h4 className="text-[14px] font-bold text-white mb-1.5 tracking-wide">High-Risk Scam Detected</h4>
+                      <h4 className="text-[13px] font-bold text-white mb-1.5 whitespace-nowrap">High-Risk Scam Detected</h4>
                       <p className="text-[12px] text-white/70 leading-relaxed m-0">Signs of a crypto investment scam. Do not click the link or share financial info.</p>
                     </div>
                   </div>
@@ -264,8 +311,19 @@ export default function Hero() {
                 </div>
               </div>
             </div>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Scroll cue */}
+      <div
+        className="absolute top-[calc(100vh-44px)] left-1/2 -translate-x-1/2 text-white/30 animate-bounce pointer-events-none"
+        aria-hidden="true"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
       </div>
     </section>
   );
