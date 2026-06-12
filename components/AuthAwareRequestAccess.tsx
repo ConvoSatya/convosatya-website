@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function AuthAwareRequestAccess() {
-  const [isLoading, setIsLoading] = useState(true);
+  // Render the default CTA immediately and swap only if the session check
+  // says the user is logged in — returning null while loading made the
+  // button pop in and the centered hero layout jump on every page load.
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -18,23 +20,17 @@ export default function AuthAwareRequestAccess() {
         setIsLoggedIn(Boolean(data.loggedIn));
       } catch {
         setIsLoggedIn(false);
-      } finally {
-        setIsLoading(false);
       }
     }
 
     checkSession();
   }, []);
 
-  if (isLoading) {
-    return null;
-  }
-
   if (isLoggedIn) {
     return (
         <Link
         href="/faust-demo"
-        className="inline-flex items-center justify-center rounded-full bg-[#2EC4B6] px-6 py-3 text-sm font-semibold text-slate-950 transition-all duration-200 hover:bg-[#5bd8cd] active:scale-95 no-underline"
+        className="inline-flex items-center justify-center rounded-full bg-[#29B0A4] px-5 py-3 text-sm font-semibold text-slate-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] transition-all duration-200 hover:bg-[#2EC4B6] hover:-translate-y-0.5 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_20px_rgba(46,196,182,0.2)] active:translate-y-0 active:scale-95 no-underline"
         >
         Go to Demo
         </Link>
@@ -44,9 +40,9 @@ export default function AuthAwareRequestAccess() {
   return (
     <Link
       href="/platform"
-      className="inline-flex items-center justify-center rounded-full bg-[#2EC4B6] px-6 py-3 text-sm font-semibold text-slate-950 transition-all duration-200 hover:bg-[#5bd8cd] active:scale-95 no-underline"
+      className="inline-flex items-center justify-center rounded-full bg-[#29B0A4] px-5 py-3 text-sm font-semibold text-slate-950 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] transition-all duration-200 hover:bg-[#2EC4B6] hover:-translate-y-0.5 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_20px_rgba(46,196,182,0.2)] active:translate-y-0 active:scale-95 no-underline"
     >
-      Request Early Platform Access
+      Request Early Access
     </Link>
   );
 }
