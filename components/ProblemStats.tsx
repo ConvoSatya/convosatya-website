@@ -148,7 +148,7 @@ export default function ProblemStats() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-black px-6 pt-10 pb-20 md:pt-12 md:pb-28">
+    <section ref={sectionRef} className="relative overflow-hidden bg-black px-6 pt-10 pb-12 md:pt-12 md:pb-16">
       <div className="relative z-10 mx-auto max-w-5xl">
         {/* Header — staggered cascade instead of one block */}
         <div className="mb-14 text-center">

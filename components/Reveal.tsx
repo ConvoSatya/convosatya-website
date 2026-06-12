@@ -17,8 +17,8 @@ export default function Reveal({
   className?: string;
   /** Stagger delay in milliseconds */
   delay?: number;
-  /** Direction the content slides in from */
-  from?: "up" | "left" | "right";
+  /** Direction the content slides in from ("soft" = gentle 10px rise, "none" = fade only) */
+  from?: "up" | "left" | "right" | "soft" | "none";
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
