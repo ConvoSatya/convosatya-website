@@ -186,6 +186,13 @@ export default function Footer() {
               Careers
             </Link>
 
+            <Link
+              href="/contact"
+              className="text-[14px] text-white/75 hover:text-white no-underline transition-colors"
+            >
+              Contact
+            </Link>
+
             <button
               onClick={() =>
                 window.dispatchEvent(new CustomEvent("open-access-modal"))

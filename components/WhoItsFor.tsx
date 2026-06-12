@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Landmark, RadioTower, Shield, GraduationCap } from "lucide-react";
 import Reveal from "./Reveal";
 import AuthAwareRequestAccess from "./AuthAwareRequestAccess";
@@ -76,12 +77,12 @@ export default function WhoItsFor() {
                 <p className="text-[14px] text-white/60">
                   Interested in bringing ConvoSatya to your organization?
                 </p>
-                <a
-                  href="mailto:support@convosatya.com?subject=ConvoSatya%20%E2%80%94%20Working%20together"
+                <Link
+                  href="/contact"
                   className="mt-2 inline-block text-[14px] font-semibold text-teal-400 no-underline transition-colors hover:text-teal-300"
                 >
                   Get in touch →
-                </a>
+                </Link>
               </div>
             </div>
           </Reveal>
