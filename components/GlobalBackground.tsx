@@ -13,23 +13,14 @@ export default function GlobalBackground() {
         overflow: "hidden",
       }}
     >
-      {/* Subtle blue glow top right */}
+      {/* Noise texture overlay — inline SVG, no external request */}
       <div
-        className="absolute top-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-blue-600/5 rounded-full blur-[150px] animate-pulse"
-        style={{ animationDuration: "15s" }}
-      />
-      {/* Subtle teal glow bottom left */}
-      <div
-        className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-teal-500/5 rounded-full blur-[150px] animate-pulse"
-        style={{ animationDuration: "18s", animationDelay: "2s" }}
-      />
-      {/* Noise texture overlay (optional subtle texture) */}
-      <div 
-        className="absolute inset-0 opacity-[0.02]" 
-        style={{ 
-          backgroundImage: "url('https://grainy-gradients.vercel.app/noise.svg')",
+        className="absolute inset-0 opacity-[0.02]"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
           backgroundSize: "100px",
-        }} 
+        }}
       />
     </div>
   );

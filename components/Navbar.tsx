@@ -51,26 +51,22 @@ export default function Navbar() {
         </Link>
 
         {/* Right: Nav Links */}
-        {/* Right: Nav Links */}
         <div className="flex items-center gap-4 sm:gap-6 md:gap-8">
           <Link
             href="/product"
-            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
-            style={{ color: "rgba(255,255,255,0.85)" }}
+            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white no-underline"
           >
             Product
           </Link>
           <Link
             href="/faust-demo"
-            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
-            style={{ color: "rgba(255,255,255,0.85)" }}
+            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white no-underline"
           >
             Demo
           </Link>
           <Link
             href="/faq"
-            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white hover:drop-shadow-[0_0_6px_rgba(255,255,255,0.25)] no-underline"
-            style={{ color: "rgba(255,255,255,0.85)" }}
+            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white no-underline"
           >
             FAQ
           </Link>
