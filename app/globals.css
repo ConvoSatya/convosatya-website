@@ -64,6 +64,12 @@ body {
 .reveal-up {
   transform: translateY(24px);
 }
+.reveal-soft {
+  transform: translateY(10px);
+}
+.reveal-none {
+  transform: none;
+}
 .reveal-left {
   transform: translateX(-32px);
 }
@@ -79,6 +85,172 @@ body {
     opacity: 1 !important;
     transform: none !important;
     transition: none;
+  }
+}
+
+@keyframes pulseRing {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* FAUST hub motion: breathing pulse, radar sweep, orbiting signals */
+@keyframes hubRotate {
+  to { transform: rotate(360deg); }
+}
+.hub-pulse {
+  animation: pulseRing 5s ease-in-out infinite;
+}
+.hub-sweep {
+  border-radius: 9999px;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(45, 212, 191, 0.16) 35deg, transparent 70deg);
+  -webkit-mask-image: radial-gradient(circle, transparent 55%, black 62%, black 78%, transparent 85%);
+  mask-image: radial-gradient(circle, transparent 55%, black 62%, black 78%, transparent 85%);
+  animation: hubRotate 12s linear infinite;
+}
+.hub-orbit {
+  animation: hubRotate 18s linear infinite;
+}
+.hub-orbit-reverse {
+  animation: hubRotate 26s linear infinite reverse;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hub-pulse,
+  .hub-sweep,
+  .hub-orbit,
+  .hub-orbit-reverse {
+    animation: none;
+  }
+}
+
+/* Capability micro-visuals — living icons inside the platform index.
+   Each animation's element attributes default to the FINAL frame, so
+   prefers-reduced-motion (animation: none) shows a clean static icon. */
+@keyframes cap1Scan {
+  0% { transform: translateY(0); opacity: 0; }
+  4% { opacity: 0.9; }
+  14% { transform: translateY(15px); opacity: 0; }
+  100% { transform: translateY(15px); opacity: 0; }
+}
+.cap1-scan { animation: cap1Scan 5s linear infinite; }
+@keyframes cap1Flag {
+  0%, 14% { opacity: 0; transform: scale(0.5); }
+  22% { opacity: 1; transform: scale(1); }
+  60% { opacity: 1; }
+  72%, 100% { opacity: 0; transform: scale(0.5); }
+}
+.cap1-flag { transform-box: fill-box; transform-origin: center; animation: cap1Flag 5s ease-in-out infinite; }
+
+@keyframes cap2Bubble {
+  0% { opacity: 0; }
+  8% { opacity: 1; }
+  86% { opacity: 1; }
+  94%, 100% { opacity: 0; }
+}
+.cap2-bubble { animation: cap2Bubble 4.5s ease-in-out infinite; }
+@keyframes cap2Ring {
+  0%, 12% { stroke-dashoffset: 21; opacity: 0; }
+  16% { opacity: 0.8; }
+  34% { stroke-dashoffset: 0; opacity: 0.8; }
+  42%, 100% { stroke-dashoffset: 0; opacity: 0; }
+}
+.cap2-ring { animation: cap2Ring 4.5s ease-in-out infinite; }
+@keyframes cap2Check {
+  0%, 40% { stroke-dashoffset: 10; opacity: 1; }
+  54% { stroke-dashoffset: 0; }
+  84% { stroke-dashoffset: 0; opacity: 1; }
+  92%, 100% { opacity: 0; stroke-dashoffset: 10; }
+}
+.cap2-check { animation: cap2Check 4.5s ease-in-out infinite; }
+
+@keyframes cap3Seg2 {
+  0%, 18% { opacity: 0; }
+  28% { opacity: 0.75; }
+  68% { opacity: 0.75; }
+  82%, 100% { opacity: 0; }
+}
+.cap3-seg2 { animation: cap3Seg2 6s ease-in-out infinite; }
+@keyframes cap3Seg3 {
+  0%, 38% { opacity: 0; }
+  48% { opacity: 1; }
+  64% { opacity: 1; }
+  76%, 100% { opacity: 0; }
+}
+.cap3-seg3 { animation: cap3Seg3 6s ease-in-out infinite; }
+@keyframes cap3Red {
+  0%, 46% { opacity: 0; }
+  52% { opacity: 0.7; }
+  60% { opacity: 0.7; }
+  66%, 100% { opacity: 0; }
+}
+.cap3-red { animation: cap3Red 6s ease-in-out infinite; }
+
+@keyframes cap4Check {
+  0% { stroke-dashoffset: 8; opacity: 1; }
+  12% { stroke-dashoffset: 0; }
+  72% { stroke-dashoffset: 0; opacity: 1; }
+  84% { opacity: 0; }
+  100% { stroke-dashoffset: 8; opacity: 0; }
+}
+.cap4-check { animation: cap4Check 5s ease-in-out infinite; }
+
+@keyframes cap5Sweep {
+  0% { transform: translateX(0); opacity: 0; }
+  5% { opacity: 0.3; }
+  24% { transform: translateX(14px); opacity: 0; }
+  100% { transform: translateX(14px); opacity: 0; }
+}
+.cap5-sweep { animation: cap5Sweep 4s ease-in-out infinite; }
+
+@keyframes cap6Pulse {
+  0%, 100% { transform: scaleY(0.72); }
+  50% { transform: scaleY(1.08); }
+}
+.cap6-bar { transform-box: fill-box; transform-origin: center; animation: cap6Pulse 4s ease-in-out infinite; }
+@keyframes cap6Main {
+  0%, 100% { transform: scaleY(0.8); opacity: 0.75; }
+  50% { transform: scaleY(1.22); opacity: 1; }
+}
+.cap6-bar-main { transform-box: fill-box; transform-origin: center; animation: cap6Main 4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cap1-scan, .cap1-flag, .cap2-bubble, .cap2-ring, .cap2-check,
+  .cap3-seg2, .cap3-seg3, .cap3-red, .cap4-check, .cap5-sweep,
+  .cap6-bar, .cap6-bar-main {
+    animation: none;
+  }
+}
+
+/* Comet traveling along a curved connector path (pathLength normalized
+   to 100, so one animation serves every path regardless of real length) */
+@keyframes connectorDash {
+  to { stroke-dashoffset: 0; }
+}
+.connector-dash {
+  stroke-dasharray: 10 90;
+  stroke-dashoffset: 100;
+  animation: connectorDash 3.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .connector-dash {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* Light pulse traveling along a connector line toward the hub */
+@keyframes connectorFlow {
+  0% { transform: translateY(-50%) translateX(0); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateY(-50%) translateX(118px); opacity: 0; }
+}
+.connector-flow {
+  animation: connectorFlow 2.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .connector-flow {
+    animation: none;
+    opacity: 0;
   }
 }
 
