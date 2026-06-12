@@ -70,6 +70,12 @@ export default function Navbar() {
           >
             FAQ
           </Link>
+          <Link
+            href="/contact"
+            className="text-[rgba(255,255,255,0.85)] text-sm font-medium tracking-wide transition-all duration-200 active:scale-95 active:opacity-80 hover:text-white no-underline"
+          >
+            Contact
+          </Link>
         </div>
       </div>
     </nav>
